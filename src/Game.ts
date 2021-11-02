@@ -1,6 +1,6 @@
 import * as WebSocket from "ws";
 
-export default class Server {
+export default class Game {
   public server: WebSocket.Server;
 
   constructor(server: WebSocket.Server) {

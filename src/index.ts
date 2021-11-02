@@ -1,8 +1,8 @@
 import * as WebSocket from "ws";
-import Server from "./Server";
+import Game from "./Game";
 
 export default function () {
   const wss = new WebSocket.Server({ port: 1234 });
 
-  const server = new Server(wss);
+  const server = new Game(wss);
 }
