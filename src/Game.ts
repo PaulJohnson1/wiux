@@ -1,13 +1,9 @@
-import * as WebSocket from "ws";
+import Server from "./Server";
 
 export default class Game {
-  public server: WebSocket.Server;
+  public server: Server;
 
-  constructor(server: WebSocket.Server) {
+  constructor(server: Server) {
     this.server = server;
-
-    this.server.on("connection", () => {
-      console.log("connection");
-    });
   }
 }
