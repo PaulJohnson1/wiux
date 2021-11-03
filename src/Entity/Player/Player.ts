@@ -11,7 +11,5 @@ export default class Player extends BaseEntity {
     this.flails = [];
 
     new Flail(this.game, this);
-
-    console.log(this);
   }
 }
