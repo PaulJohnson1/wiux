@@ -15,7 +15,7 @@ export default class Entity {
     this.game.entities.add(this);
   }
 
-  writeBinary(writer: Writer) {}
+  writeBinary(writer: Writer, isCeation: boolean) {}
 
   tick(tick: number) {}
 }

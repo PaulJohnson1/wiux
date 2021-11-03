@@ -13,11 +13,16 @@ export default class Flail extends BaseEntity {
     super(game);
     this.owner = owner;
 
+    this.size = 1000;
+
     this.owner.flails.push(this);
   }
 
-  writeBinary(writer: Writer) {
-    writer.vu(2); // flail type
+  writeBinary(writer: Writer, isCreation: boolean) {
+    if (isCreation) {
+      writer.vu(2); // flail type
+    }
+    
     writer.vu(this.size);
     writer.vi(this.position.x);
     writer.vi(this.position.y);
