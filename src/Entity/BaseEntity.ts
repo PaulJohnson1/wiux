@@ -14,6 +14,8 @@ export default class BaseEntity extends Entity {
 
     this.position = new Vector(0, 0);
     this.velocity = new Vector(0, 0);
+
+    this.size = 0;
   }
 
   applyForce(distance: number, theta: number, polar = true) {
