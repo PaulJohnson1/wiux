@@ -16,9 +16,17 @@ export default class BaseEntity extends Entity {
     this.velocity = new Vector(0, 0);
   }
 
+  applyForce(distance: number, theta: number, polar = true) {
+    const addedVel = polar ? Vector.fromPolar(distance, theta) : new Vector(distance, theta);
+
+    this.velocity = this.velocity.add(addedVel)
+  }
+
   tick(tick: number) {
     super.tick(tick)
-  
+
+    this.velocity = this.velocity.scale(0.9);
+
     this.position = this.position.add(this.velocity);
   }
 }

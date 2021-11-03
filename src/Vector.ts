@@ -7,6 +7,13 @@ export default class Vector {
     this.y = y;
   }
 
+  static fromPolar(distance: number, theta: number) {
+    return new Vector(
+      distance * Math.cos(theta),
+      distance * Math.sin(theta)
+    );
+  }
+
   add(vector: Vector) {
     return new Vector(this.x + vector.x, this.y + vector.y);
   }
