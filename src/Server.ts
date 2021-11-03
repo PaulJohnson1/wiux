@@ -12,8 +12,15 @@ export default class Server {
     this.game = new Game(this);
 
     this.server.on("connection", ws => {
+      console.log("new player");
+      
+      const client = new Client(this.game, ws);
       /** @ts-ignore */
-      ws.client = new Client(this.game, ws);
+      ws.client = client;
+      ws.on("close", () => {
+        /** @ts-ignore */
+        this.game.entities.delete(ws.client);
+      });
     });
   }
 }
