@@ -5,10 +5,12 @@ export default class Game {
   public server: Server;
   public entities: Set<Entity>;
   public tickCount: number;
+  public nextId: number;
 
   constructor(server: Server) {
     this.server = server;
 
+    this.nextId = 0;
     this.tickCount = 0;
     this.entities = new Set();
   

@@ -8,6 +8,7 @@ import Entity from "./Entity";
 export default class BaseEntity extends Entity {
   public position: Vector;
   public velocity: Vector;
+  public size: number;
 
   constructor(game: Game) {
     super(game);
