@@ -1,4 +1,5 @@
 import * as WebSocket from "ws";
+import Game from "./Game";
 import Player from "./Entity/Player";
 
 export default class Client extends Player {
