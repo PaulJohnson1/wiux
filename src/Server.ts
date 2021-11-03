@@ -1,5 +1,6 @@
 import * as WebSocket from "ws";
 import Game from "./Game";
+import Client from "./Client";
 
 export default class Server {
   public server: WebSocket.Server;
@@ -10,8 +11,9 @@ export default class Server {
 
     this.game = new Game(this);
 
-    this.server.on("connection", () => {
-      console.log("connection");
+    this.server.on("connection", ws => {
+      /** @ts-ignore */
+      ws.client = new Client(this.game, ws);
     });
   }
 }
