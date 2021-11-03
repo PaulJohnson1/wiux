@@ -1,9 +1,8 @@
-import Game from "../Game";
+import Game from "../Game"
+import Entity from "./Entity";
 
-export default class BaseEntity {
-  public game: Game;
-
+export default class BaseEntity extends Entity {
   constructor(game: Game) {
-    this.game = game;
+    super(game);
   }
 }
