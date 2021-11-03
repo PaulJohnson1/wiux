@@ -15,6 +15,10 @@ export default class Entity {
     this.game.entities.add(this);
   }
 
+  terminate() {
+    this.game.entities.delete(this);
+  }
+
   writeBinary(writer: Writer, isCeation: boolean) {}
 
   tick(tick: number) {}

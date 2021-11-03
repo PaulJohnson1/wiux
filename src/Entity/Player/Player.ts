@@ -14,6 +14,13 @@ export default class Player extends BaseEntity {
     new Flail(this.game, this);
   }
 
+  terminate() {
+    super.terminate();
+    this.flails.forEach(flail => {
+      flail.terminate();
+    });
+  }
+
   writeBinary(writer: Writer, isCreation: boolean) {
     if (isCreation) {
       writer.vu(1); // player type

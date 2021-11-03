@@ -19,7 +19,7 @@ export default class Server {
       ws.client = client;
       ws.on("close", () => {
         /** @ts-ignore */
-        this.game.entities.delete(ws.client);
+        client.terminate();
       });
     });
   }

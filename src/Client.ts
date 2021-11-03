@@ -22,8 +22,7 @@ export default class Client extends Player {
     writer.vu(1);
 
     writer.vu(this.id);
-    writer.vu(this.game.width);
-    writer.vu(this.game.height);
+    writer.vu(this.game.size);
 
     this.socket.send(writer.write());
   }
@@ -36,6 +35,7 @@ export default class Client extends Player {
     this.view.forEach(entity => {
       if (!this.game.entities.has(entity)) {
         this.view.delete(entity);
+        writer.vu(entity.id);
       }
     });
 
@@ -45,7 +45,7 @@ export default class Client extends Player {
       const isCreation = !this.view.has(entity);
 
       if (isCreation) this.view.add(entity);
-
+      writer.vu(entity.id);
       writer.vu(isCreation ? 1 : 0);
       entity.writeBinary(writer, isCreation);
     });

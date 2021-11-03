@@ -6,19 +6,17 @@ export default class Game {
   public entities: Set<Entity>;
   public tickCount: number;
   public nextId: number;
-  public width: number;
-  public height: number;
+  public size: number;
 
   constructor(server: Server) {
     this.server = server;
 
-    this.nextId = 0;
+    this.nextId = 1; // this `1` is needed since entities are null terminated in the protocol
     this.tickCount = 0;
     this.entities = new Set();
 
-    this.width = 8500;
-    this.height = 8500;
-  
+    this.size = 8500;
+
     setInterval(() => this.tick(this.tickCount++), 1000 / 40);
   }
 
