@@ -19,10 +19,11 @@ export default class Player extends BaseEntity {
     const flails = Array.from(this.flails);
 
     for (let i = 0; i < flails.length; i++) {
-      this.ropes.add(new Rope(this.game, this, flails[i], 8, 0.2, 80));
+      this.ropes.add(new Rope(this.game, this, flails[i], 8, 0.2, 100));
     }
  
     this.size = 100;
+    this.collides = true;
   }
 
   terminate() {

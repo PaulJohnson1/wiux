@@ -10,6 +10,7 @@ export default class BaseEntity extends Entity {
   public velocity: Vector;
   public size: number;
   public isAffectedByRope: boolean;
+  public collides: boolean;
 
   constructor(game: Game) {
     super(game);
@@ -18,6 +19,7 @@ export default class BaseEntity extends Entity {
     this.velocity = new Vector(0, 0);
 
     this.size = 0;
+    this.collides = false;
     this.isAffectedByRope = false;
   }
 
@@ -27,11 +29,33 @@ export default class BaseEntity extends Entity {
     this.velocity = this.velocity.add(addedVel)
   }
 
+  findCollisions() {
+    if (!this.collides) return;
+
+    this.game.entities.forEach(entity => {
+      if (!(entity instanceof BaseEntity)) return;
+      if (!entity.collides) return;
+      if (entity === this) return;
+
+      const collisionsRadius = this.size + entity.size;
+      const delta = this.position.subtract(entity.position);
+      const distance = delta.mag;
+
+      if (distance < collisionsRadius) {
+
+        const deltaDir = delta.dir;
+
+        this.applyForce(deltaDir + Math.PI, 20);
+        entity.applyForce(deltaDir, 20);
+      }
+    });
+  }
+
   tick(tick: number) {
     super.tick(tick)
 
-    this.velocity = this.velocity.scale(0.9);
-
+    this.velocity = this.velocity.scale(0.95);
     this.position = this.position.add(this.velocity);
+    this.findCollisions();
   }
 }
