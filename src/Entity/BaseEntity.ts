@@ -9,6 +9,7 @@ export default class BaseEntity extends Entity {
   public position: Vector;
   public velocity: Vector;
   public size: number;
+  public isAffectedByRope: boolean;
 
   constructor(game: Game) {
     super(game);
@@ -17,12 +18,13 @@ export default class BaseEntity extends Entity {
     this.velocity = new Vector(0, 0);
 
     this.size = 0;
+    this.isAffectedByRope = false;
   }
 
-  applyForce(distance: number, theta: number, polar = true) {
-    const addedVel = polar ? Vector.fromPolar(theta, distance) : new Vector(distance, theta);
+  applyForce(theta: number, distance: number, polar = true) {
+    const addedVel = polar ? Vector.fromPolar(theta + Math.PI, distance) : new Vector(theta, distance);
 
-    this.velocity = this.velocity.subtract(addedVel)
+    this.velocity = this.velocity.add(addedVel)
   }
 
   tick(tick: number) {

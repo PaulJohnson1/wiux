@@ -7,7 +7,7 @@ export default class Vector {
     this.y = y;
   }
 
-  static fromPolar(distance: number, theta: number) {
+  static fromPolar(theta: number, distance: number) {
     return new Vector(
       distance * Math.cos(theta),
       distance * Math.sin(theta)
@@ -53,6 +53,8 @@ export default class Vector {
   }
 
   get unitVector() {
-    return new Vector(this.x / this.mag, this.y / this.mag);
+    const mag = this.mag;
+
+    return new Vector((this.x / mag) || 0, (this.y / mag) || 0);
   }
 }
