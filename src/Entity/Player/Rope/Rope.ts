@@ -12,13 +12,13 @@ export default class Rope extends Entity {
   public segments: Set<BaseEntity>;
   public owner: Player;
 
-  constructor(game: Game, owner: Player, length: number, springConstant: number, restLength: number) {
+  constructor(game: Game, entity1: Player, entity2: BaseEntity, length: number, springConstant: number, restLength: number) {
     super(game);
 
     this.length = length;
     this.k = springConstant;
     this.restLength = restLength;
-    this.owner = owner;
+    this.owner = entity1;
 
     this.segments = new Set([this.owner]);
 
@@ -27,6 +27,8 @@ export default class Rope extends Entity {
 
       this.segments.add(ropeSegment);
     }
+
+    this.segments.add(entity2)
   }
 
   writeBinary(writer: Writer, isCreation: boolean) {

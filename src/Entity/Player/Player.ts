@@ -11,12 +11,17 @@ export default class Player extends BaseEntity {
   constructor(game: Game) {
     super(game); 
 
-    this.ropes = new Set();
     this.flails = new Set();
+    this.ropes = new Set();
 
-    new Rope(this.game, this, 3, 0.1, 300);
     new Flail(this.game, this);
 
+    const flails = Array.from(this.flails);
+
+    for (let i = 0; i < flails.length; i++) {
+      new Rope(this.game, this, flails[i], 3, 0.1, 300);
+    }
+ 
     this.size = 100;
   }
 

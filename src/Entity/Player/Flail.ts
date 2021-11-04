@@ -14,6 +14,7 @@ export default class Flail extends BaseEntity {
     this.owner = owner;
 
     this.size = 1000;
+    this.isAffectedByRope = true;
 
     this.owner.flails.add(this);
   }
