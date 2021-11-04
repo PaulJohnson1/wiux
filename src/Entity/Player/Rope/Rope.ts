@@ -38,6 +38,8 @@ export default class Rope extends Entity {
   }
 
   terminate() {
+    super.terminate();
+
     this.segments.forEach(segment => {
       if (segment instanceof RopeSegment) segment.terminate();
     });
