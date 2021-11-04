@@ -69,7 +69,7 @@ export default class Client extends Player {
   }
 
   tick(tick: number) {
-    if (this.inputs.distance > 80) this.applyForce(this.inputs.angle, 20);
+    if (this.inputs.distance > 80) this.applyForce(this.inputs.angle, 1);
 
     this.sendUpdate();
 

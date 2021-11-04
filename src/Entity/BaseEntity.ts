@@ -23,6 +23,14 @@ export default class BaseEntity extends Entity {
     this.isAffectedByRope = false;
   }
 
+  get area() {
+    return Math.PI * this.size ** 2;
+  }
+
+  set area(v: number) {
+    this.size = Math.sqrt(v / Math.PI)
+  }
+
   applyForce(theta: number, distance: number, polar = true) {
     const addedVel = polar ? Vector.fromPolar(theta + Math.PI, distance) : new Vector(theta, distance);
 
@@ -37,22 +45,26 @@ export default class BaseEntity extends Entity {
       if (!entity.collides) return;
       if (entity === this) return;
 
-      const collisionsRadius = this.size + entity.size;
+      const collisionRadius = this.size + entity.size;
       const delta = this.position.subtract(entity.position);
       const distance = delta.mag;
 
-      if (distance < collisionsRadius) {
+      if (distance < collisionRadius) {
 
         const deltaDir = delta.dir;
 
-        this.applyForce(deltaDir + Math.PI, 20);
-        entity.applyForce(deltaDir, 20);
+        const distancInside = collisionRadius - distance;
+
+        const force = distancInside / 30;
+
+        this.applyForce(deltaDir + Math.PI, force);
+        entity.applyForce(deltaDir, force);
       }
     });
   }
 
   tick(tick: number) {
-    super.tick(tick)
+    super.tick(tick);
 
     this.velocity = this.velocity.scale(0.95);
     this.position = this.position.add(this.velocity);

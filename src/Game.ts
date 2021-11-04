@@ -15,7 +15,7 @@ export default class Game {
     this.tickCount = 0;
     this.entities = new Set();
 
-    this.size = 8500;
+    this.size = 850;
 
     setInterval(() => this.tick(this.tickCount++), 1000 / 40);
   }
