@@ -15,7 +15,7 @@ export default class Flail extends BaseEntity {
 
     this.size = 1000;
 
-    this.owner.flails.push(this);
+    this.owner.flails.add(this);
   }
 
   writeBinary(writer: Writer, isCreation: boolean) {

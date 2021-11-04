@@ -20,9 +20,9 @@ export default class BaseEntity extends Entity {
   }
 
   applyForce(distance: number, theta: number, polar = true) {
-    const addedVel = polar ? Vector.fromPolar(distance, theta) : new Vector(distance, theta);
+    const addedVel = polar ? Vector.fromPolar(theta, distance) : new Vector(distance, theta);
 
-    this.velocity = this.velocity.add(addedVel)
+    this.velocity = this.velocity.subtract(addedVel)
   }
 
   tick(tick: number) {

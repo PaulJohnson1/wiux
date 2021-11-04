@@ -4,12 +4,12 @@ import Flail from "./Flail";
 import { Writer } from "../../Coder";
 
 export default class Player extends BaseEntity {
-  public flails: Flail[];
+  public flails: Set<Flail>;
 
   constructor(game: Game) {
     super(game);
 
-    this.flails = [];
+    this.flails = new Set();
     new Flail(this.game, this);
 
     this.size = 100;
