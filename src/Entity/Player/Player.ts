@@ -10,8 +10,9 @@ export default class Player extends BaseEntity {
     super(game);
 
     this.flails = [];
-
     new Flail(this.game, this);
+
+    this.size = 100;
   }
 
   terminate() {
@@ -28,5 +29,6 @@ export default class Player extends BaseEntity {
     
     writer.vi(this.position.x);
     writer.vi(this.position.y);
+    writer.vu(this.size);
   }
 }
