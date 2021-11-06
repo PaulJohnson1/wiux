@@ -27,10 +27,10 @@ public:
 
     void getHashes(Box box, std::vector<std::string> *ptr)
     {
-        int32_t startX = box.x / cellSize;
-        int32_t startY = box.y / cellSize;
-        int32_t endX = (box.x + box.w) / cellSize;
-        int32_t endY = (box.y + box.h) / cellSize;
+        int32_t const startX = (box.x - box.w) / cellSize;
+        int32_t const startY = (box.y - box.h) / cellSize;
+        int32_t const endX = (box.x + box.w) / cellSize;
+        int32_t const endY = (box.y + box.h) / cellSize;
 
         for (int32_t x = startX; x <= endX; x++)
         {
