@@ -1,6 +1,8 @@
 import Game from "../Game";
 import Vector from "../Vector";
 import Entity from "./Entity";
+import { Box } from "../SpatialHashing";
+
 
 /**
  * An entity that is visible and has physics
@@ -37,30 +39,42 @@ export default class BaseEntity extends Entity {
     this.velocity = this.velocity.add(addedVel)
   }
 
-  findCollisions() {
+  collideWith(entities: Set<BaseEntity>) {
     if (!this.collides) return;
 
-    this.game.entities.forEach(entity => {
-      if (!(entity instanceof BaseEntity)) return;
+    entities.forEach((entity: BaseEntity) => {
       if (!entity.collides) return;
-      if (entity === this) return;
+      const delta = entity.position.subtract(this.position);
+      const deltaDir = delta.dir;
 
-      const collisionRadius = this.size + entity.size;
-      const delta = this.position.subtract(entity.position);
-      const distance = delta.mag;
-
-      if (distance < collisionRadius) {
-
-        const deltaDir = delta.dir;
-
-        const distancInside = collisionRadius - distance;
-
-        const force = distancInside / 30;
-
-        this.applyForce(deltaDir + Math.PI, force);
-        entity.applyForce(deltaDir, force);
-      }
+      this.applyForce(deltaDir, 2);
+      entity.applyForce(deltaDir + Math.PI, 2);
     });
+  }
+
+  findCollisions(): Set<BaseEntity> {
+    const ret: Set<BaseEntity> = new Set();
+
+    this.game.spatialHashing.query({
+      x: this.position.x,
+      y: this.position.y,
+      w: this.size,
+      h: this.size
+    }).forEach((box: Box) => {
+      if (!box.id) throw new Error("collided with an entity that has no id");
+
+      const entity = this.game._entities[box.id];
+
+      if (!(entity instanceof BaseEntity)) return;
+
+      const delta = entity.position.subtract(this.position);
+      const distance = delta.mag;
+      const collisionDistance = entity.size + this.size;
+
+      if (distance < collisionDistance) ret.add(entity);
+    });
+
+    return ret;
   }
 
   tick(tick: number) {
@@ -68,6 +82,6 @@ export default class BaseEntity extends Entity {
 
     this.velocity = this.velocity.scale(0.95);
     this.position = this.position.add(this.velocity);
-    this.findCollisions();
+    this.collideWith(this.findCollisions());
   }
 }

@@ -10,7 +10,7 @@ export default class RopeSegment extends BaseEntity {
     super(game);
 
     this.isAffectedByRope = true;
-
+    this.collides = false;
     this.owner = owner;
   }
 

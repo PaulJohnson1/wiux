@@ -11,6 +11,8 @@ export default class Server {
 
     this.game = new Game(this);
 
+    (process as any).game = this;
+
     this.server.on("connection", ws => {
       console.log("new player");
       

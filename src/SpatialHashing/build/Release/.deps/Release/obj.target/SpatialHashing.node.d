@@ -1,0 +1,1 @@
+cmd_Release/obj.target/SpatialHashing.node := g++ -shared -pthread -rdynamic -m64  -Wl,-soname=SpatialHashing.node -o Release/obj.target/SpatialHashing.node -Wl,--start-group Release/obj.target/SpatialHashing/detect.o -Wl,--end-group 
