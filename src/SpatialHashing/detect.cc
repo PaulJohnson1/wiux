@@ -1,10 +1,12 @@
-// this took literally days to make. i might upload it on github so that other people dont have to waste days on making something similar to this
-
+#include "robin_hood.h"
 #include <iostream>
 #include <vector>
-#include <unordered_map>
+#include <algorithm>
 #include <node.h>
 
+typedef int32_t i32;
+
+using namespace robin_hood;
 struct Box
 {
     int32_t x;
@@ -12,40 +14,45 @@ struct Box
     int32_t w;
     int32_t h;
     uint16_t id;
+
+    bool operator==(const Box box)
+    {
+        return box.id == id;
+    }
 };
 
-class SpactialHash
+class SpatialHash
 {
 public:
-    int32_t cellSize;
-    std::unordered_map<std::string, std::vector<Box>> cells;
+    unordered_flat_map<i32, std::vector<Box>> cells;
+    i32 cellSize;
 
-    SpactialHash(int32_t cellSize)
+    SpatialHash(i32 cellSize)
     {
         this->cellSize = cellSize;
     }
 
-    void getHashes(Box box, std::vector<std::string> *ptr)
+    void getHashes(Box box, std::vector<i32> *out)
     {
-        int32_t const startX = (box.x - box.w) / cellSize;
-        int32_t const startY = (box.y - box.h) / cellSize;
-        int32_t const endX = (box.x + box.w) / cellSize;
-        int32_t const endY = (box.y + box.h) / cellSize;
+        i32 const startX = (box.x - box.w >> 1) / cellSize;
+        i32 const startY = (box.y - box.h >> 1) / cellSize;
+        i32 const endX = (box.x + box.w >> 1) / cellSize;
+        i32 const endY = (box.y + box.h >> 1) / cellSize;
 
-        for (int32_t x = startX; x <= endX; x++)
+        for (i32 x = startX; x <= endX; x++)
         {
-            for (int32_t y = startY; y <= endY; y++)
+            for (i32 y = startY; y <= endY; y++)
             {
-                std::string key = std::to_string(x) + ":" + std::to_string(y);
+                i32 key = x + y * 46340; // magic number is sqrt(i32max)
 
-                (*ptr).push_back(key);
+                out->push_back(key);
             }
         }
     }
 
     void insert(Box box)
     {
-        std::vector<std::string> keys;
+        std::vector<i32> keys;
         getHashes(box, &keys);
 
         int32_t keysLength = keys.size();
@@ -56,23 +63,26 @@ public:
         }
     }
 
-    void query(Box box, std::vector<Box> *ptr)
+    void query(Box box, std::vector<Box> *out)
     {
-        std::vector<std::string> keys;
+        std::vector<i32> keys;
         getHashes(box, &keys);
 
         int32_t keysLength = keys.size();
 
         for (int32_t i = 0; i < keysLength; i++)
         {
-            std::string key = keys.at(i);
+            i32 key = keys.at(i);
 
             std::vector<Box> cell = cells[key];
             int32_t length = cell.size();
 
             for (int32_t j = 0; j < length; j++)
             {
-                (*ptr).push_back(cell.at(j));
+                Box box1 = cell.at(j);
+
+                if (std::find(out->begin(), out->end(), box1) == out->end())
+                    out->push_back(box1);
             }
         }
     }
@@ -83,23 +93,21 @@ public:
     }
 };
 
-// this is where the shitty code starts
-
-SpactialHash spatialHash(20);
-
 using v8::Array;
-using v8::TypedArray;
-using v8::Int32Array;
 using v8::ArrayBuffer;
 using v8::Context;
 using v8::Exception;
 using v8::FunctionCallbackInfo;
+using v8::Int32Array;
 using v8::Isolate;
 using v8::Local;
 using v8::Number;
 using v8::Object;
 using v8::String;
+using v8::TypedArray;
 using v8::Value;
+
+SpatialHash spatialHash(20);
 
 void setCellSize(const FunctionCallbackInfo<Value> &rawArgs)
 {
@@ -172,7 +180,8 @@ void query(const FunctionCallbackInfo<Value> &rawArgs)
     rawArgs.GetReturnValue().Set(arr);
 }
 
-void clear(const FunctionCallbackInfo<Value> &rawArgs) {
+void clear(const FunctionCallbackInfo<Value> &rawArgs)
+{
     spatialHash.clear();
 }
 
@@ -181,7 +190,7 @@ void Init(Local<Object> exports)
     NODE_SET_METHOD(exports, "setCellSize", setCellSize);
     NODE_SET_METHOD(exports, "insert", insert);
     NODE_SET_METHOD(exports, "query", query);
-    NODE_SET_METHOD(exports, "clear",  clear);
+    NODE_SET_METHOD(exports, "clear", clear);
 }
 
 NODE_MODULE(NODE_GYP_MODULE_NAME, Init);
