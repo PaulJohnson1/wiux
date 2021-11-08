@@ -2,6 +2,7 @@ import * as WebSocket from "ws";
 import Game from "./Game";
 import Player from "./Entity/Player/Player";
 import Entity from "./Entity/Entity";
+import BaseEntity from "./Entity/BaseEntity";
 import { Writer, Reader } from "./Coder";
 import { PlayerInputs } from "./types";
 
@@ -45,8 +46,10 @@ export default class Client extends Player {
 
     writer.vu(0);
 
+    const entitiesInView = this.game.entities;
+
     this.view.forEach(entity => {
-      if (!this.game.entities.has(entity)) {
+      if (!entitiesInView.has(entity)) {
         this.view.delete(entity);
         writer.vu(entity.id);
       }
@@ -54,10 +57,11 @@ export default class Client extends Player {
 
     writer.vu(0);
 
-    this.game.entities.forEach(entity => {
+    entitiesInView.forEach(entity => {
       const isCreation = !this.view.has(entity);
 
       if (isCreation) this.view.add(entity);
+
       writer.vu(entity.id);
       writer.vu(isCreation ? 1 : 0);
       entity.writeBinary(writer, isCreation);

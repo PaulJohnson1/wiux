@@ -14,7 +14,6 @@ struct Box
     int32_t w;
     int32_t h;
     uint16_t id;
-
     bool operator==(const Box box)
     {
         return box.id == id;
@@ -34,10 +33,10 @@ public:
 
     void getHashes(Box box, std::vector<i32> *out)
     {
-        i32 const startX = (box.x - box.w >> 1) / cellSize;
-        i32 const startY = (box.y - box.h >> 1) / cellSize;
-        i32 const endX = (box.x + box.w >> 1) / cellSize;
-        i32 const endY = (box.y + box.h >> 1) / cellSize;
+        i32 const startX = (box.x - box.w) / cellSize;
+        i32 const startY = (box.y - box.h) / cellSize;
+        i32 const endX = (box.x + box.w) / cellSize;
+        i32 const endY = (box.y + box.h) / cellSize;
 
         for (i32 x = startX; x <= endX; x++)
         {
@@ -111,26 +110,17 @@ SpatialHash spatialHash(20);
 
 void setCellSize(const FunctionCallbackInfo<Value> &rawArgs)
 {
-    Isolate *isolate = rawArgs.GetIsolate();
-
-    int32_t args[1] = {
-        (int32_t)rawArgs[0].As<Number>()->Value()};
-
-    spatialHash.cellSize = args[0];
+    spatialHash.cellSize = (i32)(rawArgs[0].As<Number>()->Value());
 }
 
 void insert(const FunctionCallbackInfo<Value> &rawArgs)
 {
-    Isolate *isolate = rawArgs.GetIsolate();
-
-    int32_t args[5] = {
-        (int32_t)rawArgs[0].As<Number>()->Value(),
-        (int32_t)rawArgs[1].As<Number>()->Value(),
-        (int32_t)rawArgs[2].As<Number>()->Value(),
-        (int32_t)rawArgs[3].As<Number>()->Value(),
-        (int32_t)rawArgs[4].As<Number>()->Value()};
-
-    Box box = {args[0], args[1], args[2], args[3], args[4]};
+    Box box = {
+      (i32)(rawArgs[0].As<Number>()->Value()),
+      (i32)(rawArgs[1].As<Number>()->Value()),
+      (i32)(rawArgs[2].As<Number>()->Value()),
+      (i32)(rawArgs[3].As<Number>()->Value()),
+      (uint16_t)(rawArgs[4].As<Number>()->Value())};
 
     spatialHash.insert(box);
 }
@@ -140,41 +130,24 @@ void query(const FunctionCallbackInfo<Value> &rawArgs)
     Isolate *isolate = rawArgs.GetIsolate();
     Local<Context> context = isolate->GetCurrentContext();
 
-    int32_t args[5] = {
-        (int32_t)rawArgs[0].As<Number>()->Value(),
-        (int32_t)rawArgs[1].As<Number>()->Value(),
-        (int32_t)rawArgs[2].As<Number>()->Value(),
-        (int32_t)rawArgs[3].As<Number>()->Value(),
-        (int32_t)rawArgs[4].As<Number>()->Value()};
-
-    Box box = {args[0], args[1], args[2], args[3], args[4]};
+    Box box = {
+      (i32)(rawArgs[0].As<Number>()->Value()),
+      (i32)(rawArgs[1].As<Number>()->Value()),
+      (i32)(rawArgs[2].As<Number>()->Value()),
+      (i32)(rawArgs[3].As<Number>()->Value()),
+      (uint16_t)(rawArgs[4].As<Number>()->Value())};
 
     std::vector<Box> result;
     spatialHash.query(box, &result);
 
-    Local<ArrayBuffer> buf = ArrayBuffer::New(isolate, result.size() * 5 * 4);
-    Local<Int32Array> arr = Int32Array::New(buf, 0, result.size() * 5);
+    Local<ArrayBuffer> buf = ArrayBuffer::New(isolate, result.size() * 4);
+    Local<Int32Array> arr = Int32Array::New(buf, 0, result.size());
 
-    int size = result.size() * 5;
+    int size = result.size();
 
-    for (int i = 0; i < size; i += 5)
+    for (int i = 0; i < size; i++)
     {
-        Box box = result.at(i / 5);
-
-        Local<Number> num = Number::New(isolate, box.x);
-        arr->Set(context, i, num);
-
-        num = Number::New(isolate, box.y);
-        arr->Set(context, i + 1, num);
-
-        num = Number::New(isolate, box.w);
-        arr->Set(context, i + 2, num);
-
-        num = Number::New(isolate, box.h);
-        arr->Set(context, i + 3, num);
-
-        num = Number::New(isolate, box.id);
-        arr->Set(context, i + 4, num);
+        arr->Set(context, i, Number::New(isolate, result.at(i).id));
     }
 
     rawArgs.GetReturnValue().Set(arr);

@@ -3,7 +3,7 @@
 	[
 		{
 		   "target_name": "SpatialHashing",
-		   "sources": ["detect.cc"]
+		   "sources": ["src/SpatialHashing/SpatialHashing.cc"]
 		}
 	]
 }

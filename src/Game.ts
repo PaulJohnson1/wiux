@@ -1,7 +1,7 @@
 import Server from "./Server";
 import Entity from "./Entity/Entity";
 import BaseEntity from "./Entity/BaseEntity";
-import SpatialHashing from "./SpatialHashing";
+import GameSpatialHashing from "./SpatialHashing";
 
 export default class Game {
   public server: Server;
@@ -13,7 +13,7 @@ export default class Game {
   public tickCount: number;
   public nextId: number;
   public size: number;
-  public spatialHashing: SpatialHashing;
+  public spatialHashing: GameSpatialHashing;
 
   constructor(server: Server) {
     this.server = server;
@@ -24,7 +24,7 @@ export default class Game {
     this.entities = new Set();
     this._entities = {};
 
-    this.spatialHashing = new SpatialHashing(30);
+    this.spatialHashing = new GameSpatialHashing(10, this);
 
     this.size = 850;
 
@@ -41,13 +41,7 @@ export default class Game {
     this.entities.forEach(entity => {
       if (!(entity instanceof BaseEntity)) return;
 
-      this.spatialHashing.insert({
-        x: entity.position.x,
-        y: entity.position.y,
-        w: entity.size,
-        h: entity.size,
-        id: entity.id
-      });
+      this.spatialHashing.insert(entity);
     });
 
     this._entities = {};

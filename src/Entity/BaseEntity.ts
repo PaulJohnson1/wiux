@@ -1,7 +1,6 @@
 import Game from "../Game";
 import Vector from "../Vector";
 import Entity from "./Entity";
-import { Box } from "../SpatialHashing";
 
 
 /**
@@ -40,8 +39,6 @@ export default class BaseEntity extends Entity {
   }
 
   collideWith(entities: Set<BaseEntity>) {
-    if (!this.collides) return;
-
     entities.forEach((entity: BaseEntity) => {
       if (!entity.collides) return;
       const delta = entity.position.subtract(this.position);
@@ -55,18 +52,10 @@ export default class BaseEntity extends Entity {
   findCollisions(): Set<BaseEntity> {
     const ret: Set<BaseEntity> = new Set();
 
-    this.game.spatialHashing.query({
-      x: this.position.x,
-      y: this.position.y,
-      w: this.size,
-      h: this.size
-    }).forEach((box: Box) => {
-      if (!box.id) throw new Error("collided with an entity that has no id");
+    if (!this.collides) return ret;
 
-      const entity = this.game._entities[box.id];
-
-      if (!(entity instanceof BaseEntity)) return;
-
+    /** @ts-ignore */
+    this.game.spatialHashing.query(this).forEach((entity: BaseEntity) => {
       const delta = entity.position.subtract(this.position);
       const distance = delta.mag;
       const collisionDistance = entity.size + this.size;

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cd ~/wiux-backend/src/SpatialHashing; node-gyp configure; node-gyp build;"
+    "build": "node-gyp rebuild"
   },
   "keywords": [],
   "author": "",

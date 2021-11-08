@@ -1,61 +1,113 @@
-const spatialHash = require("./build/Release/SpatialHashing.node");
+import Game from "../Game";
+import BaseEntity from "../Entity/BaseEntity";
 
-export interface Box {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
+const spatialHash = require("../../build/Release/SpatialHashing.node");
+
+interface RawSpatialHashing {
+  insert(x: number, y: number, w: number, h: number, id: number): void;
+  query(x: number, y: number, w: number, h: number): Int32Array;
+  setCellSize(size: number): void;
+  clear(): void;
+};
+
+interface AbstractEntity {
+  position: {
+    x: number,
+    y: number
+  };
+  size: number;
   id?: number;
 };
 
-interface RawSpatialHashing {
-  insert: (x: number, y: number, w: number, h: number, id?: number) => {};
-  query: (x: number, y: number, w: number, h: number, id?: number) => {};
-  setCellSize: (size: number) => {};
-  clear: () => {};
-};
-
 export default class SpatialHashing {
-  private raw: RawSpatialHashing;
+  private native: RawSpatialHashing;
+  private game: Game | null;
 
+  constructor(cellSize: number, game: Game | null = null) {
+    this.native = spatialHash;
+    this.native.setCellSize(cellSize);
 
-  constructor(cellSize: number) {
-    this.raw = spatialHash;
-    this.raw.setCellSize(cellSize);
+    this.game = game;
   }
 
   clear() {
-    this.raw.clear();
+    this.native.clear();
   }
 
-  insert(box: Box) {
-    this.raw.insert(box.x, box.y, box.w, box.h, box.id);
+  insert(entity: AbstractEntity) {
+    this.native.insert(
+      entity.position.x,
+      entity.position.y,
+      entity.size,
+      entity.size,
+      entity.id as number
+    );
   }
 
-  query(box: Box) {
-    /** @ts-ignore shut up i told you it was an i32 array */
-    const raw: Int32Array = this.raw.query(box.x, box.y, box.w, box.h, box.id);
+  query(entity: AbstractEntity): Int32Array | BaseEntity[] {
+    const raw = this.native.query(
+      entity.position.x,
+      entity.position.y,
+      entity.size,
+      entity.size
+    );
 
-    const boxesFound = raw.length / 5;
+    if (this.game) {
+      const foundEntities: BaseEntity[] = [];
 
-    const found: { [id: number]: Box } = {};
-
-    for (let i = 0; i < boxesFound; i++) {
-      const x = raw[i * 5 + 0];
-      const y = raw[i * 5 + 1];
-      const w = raw[i * 5 + 2];
-      const h = raw[i * 5 + 3];
-      const id = raw[i * 5 + 4];
-
-      found[id] = { x, y, w, h, id };
+      for (let i = 0; i < raw.length; i++) {
+        foundEntities[i] = this.game._entities[raw[i]] as BaseEntity;
+      }
+  
+      return foundEntities;
     }
 
-    const ret: Set<Box> = new Set();
-
-    Object.entries(found).forEach(([key, value]) => {
-      ret.add(value);
-    });
-
-    return ret;
+    return raw;
   }
 }
+
+export const benchmark = (it: number) => {
+  class Prng {
+    private seed: number
+  
+    constructor(seed: number) {
+      this.seed = seed;
+    }
+
+    get next() {
+      return (this.seed = this.seed * 347993 % 2147483647) / 2147483647;
+    }
+  }
+
+  const asht = new Prng(136345);
+
+  const test = new SpatialHashing(60, null);
+
+  console.time("insert");
+  for (let i = 0; i < it; i++) {
+    test.insert({
+      position: {
+        x: (asht.next - 0.5) * 2900,
+        y: (asht.next - 0.5) * 2900
+      },
+      size: asht.next * 40 + 20
+    });
+  }
+
+  console.timeEnd("insert");
+
+  console.time("query");
+
+  for (let i = 0; i < it; i++) {
+    test.query({
+      position: {
+        x: (asht.next - 0.5) * 2900,
+        y: (asht.next - 0.5) * 2900
+      },
+      size: asht.next * 40 + 20
+    });
+  }
+  console.timeEnd("query");
+
+  test.clear();
+};
