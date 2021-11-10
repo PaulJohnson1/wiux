@@ -1,4 +1,5 @@
 #include "robin_hood.h"
+#include <ctime>
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -91,6 +92,53 @@ public:
         cells.clear();
     }
 };
+
+class Random
+{
+public:
+    uint32_t seed;
+
+    Random(uint32_t seed)
+    {
+        this->seed = seed;
+    }
+
+    double next()
+    {
+        seed = seed * 33619 % 2147483647;
+
+        return (double)seed / 2147483647;
+    }
+};
+
+int main()
+{
+  SpatialHash test(170);
+  Random rand(1);
+
+  for (uint32_t i = 0; i < 100'000; i++)
+  {
+    test.insert(Box{
+      (int32_t)(rand.next() * 29000),
+      (int32_t)(rand.next() * 29000),
+      (int32_t)(rand.next() * 10),
+      (int32_t)(rand.next() * 10),
+      (uint16_t)(i),
+    });
+  }
+
+  for (uint32_t i = 0; i < 100'000; i++)
+  {
+    std::vector<Box> asht;
+    test.query(Box{
+      (int32_t)(rand.next() * 29000),
+      (int32_t)(rand.next() * 29000),
+      (int32_t)(rand.next() * 10),
+      (int32_t)(rand.next() * 10),
+      (uint16_t)(i),
+    }, &asht);
+  }
+}
 
 using v8::Array;
 using v8::ArrayBuffer;

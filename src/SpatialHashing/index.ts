@@ -67,6 +67,8 @@ export default class SpatialHashing {
 }
 
 export const benchmark = (it: number) => {
+  const times: number[] = [];
+
   class Prng {
     private seed: number
   
@@ -81,33 +83,41 @@ export const benchmark = (it: number) => {
 
   const asht = new Prng(136345);
 
-  const test = new SpatialHashing(60, null);
+  const test = new SpatialHashing(170, null);
 
-  console.time("insert");
+  const start = Date.now();
+
   for (let i = 0; i < it; i++) {
     test.insert({
       position: {
-        x: (asht.next - 0.5) * 2900,
-        y: (asht.next - 0.5) * 2900
+        x: (asht.next - 0.5) * 29000,
+        y: (asht.next - 0.5) * 29000
       },
       size: asht.next * 40 + 20
     });
   }
+  const end = Date.now();
 
-  console.timeEnd("insert");
+  times.push(end - start);
 
-  console.time("query");
+
+  const start2 = Date.now();
 
   for (let i = 0; i < it; i++) {
     test.query({
       position: {
-        x: (asht.next - 0.5) * 2900,
-        y: (asht.next - 0.5) * 2900
+        x: (asht.next - 0.5) * 29000,
+        y: (asht.next - 0.5) * 29000
       },
       size: asht.next * 40 + 20
     });
   }
-  console.timeEnd("query");
+
+  const end2 = Date.now();
+
+  times.push(end2 - start2);
 
   test.clear();
+
+  return times;
 };

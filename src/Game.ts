@@ -38,16 +38,16 @@ export default class Game {
   tick(tick: number) {
     this.spatialHashing.clear();
 
-    this.entities.forEach(entity => {
-      if (!(entity instanceof BaseEntity)) return;
-
-      this.spatialHashing.insert(entity);
-    });
-
     this._entities = {};
 
     this.entities.forEach(entity => {
       this._entities[entity.id] = entity;
+    });
+
+    this.entities.forEach(entity => {
+      if (!(entity instanceof BaseEntity)) return;
+
+      this.spatialHashing.insert(entity);
     });
 
     this.entities.forEach(entity => entity.tick(tick));

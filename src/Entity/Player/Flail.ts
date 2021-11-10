@@ -13,7 +13,7 @@ export default class Flail extends BaseEntity {
     super(game);
     this.owner = owner;
 
-    this.size = 300;
+    this.size = 30;
     this.isAffectedByRope = true;
     this.collides = true;
 

@@ -46,9 +46,10 @@ export default class Client extends Player {
 
     writer.vu(0);
 
+    /** @ts-ignore */
     const entitiesInView = this.game.entities;
 
-    this.view.forEach(entity => {
+    this.view.forEach((entity: Entity) => {
       if (!entitiesInView.has(entity)) {
         this.view.delete(entity);
         writer.vu(entity.id);
@@ -57,7 +58,7 @@ export default class Client extends Player {
 
     writer.vu(0);
 
-    entitiesInView.forEach(entity => {
+    entitiesInView.forEach((entity: Entity) => {
       const isCreation = !this.view.has(entity);
 
       if (isCreation) this.view.add(entity);
