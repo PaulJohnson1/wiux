@@ -19,7 +19,7 @@ export default class Player extends BaseEntity {
     const flails = Array.from(this.flails);
 
     for (let i = 0; i < flails.length; i++) {
-      this.ropes.add(new Rope(this.game, this, flails[i], 4, 0.6, 50));
+      this.ropes.add(new Rope(this.game, this, flails[i], 4, 0.9, 50));
     }
  
     this.size = 10;
@@ -30,6 +30,12 @@ export default class Player extends BaseEntity {
     super.terminate();
     this.flails.forEach(flail => flail.terminate());
     this.ropes.forEach(rope => rope.terminate());
+  }
+
+  onCollisionCallback(entity: BaseEntity) {
+    if (entity instanceof Flail && entity.owner !== this) {
+      this.terminate();
+    }
   }
 
   writeBinary(writer: Writer, isCreation: boolean) {

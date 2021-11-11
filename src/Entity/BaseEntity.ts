@@ -38,6 +38,8 @@ export default class BaseEntity extends Entity {
     this.velocity = this.velocity.add(addedVel)
   }
 
+  onCollisionCallback(entity: BaseEntity) {}
+
   collideWith(entities: Set<BaseEntity>) {
     entities.forEach((entity: BaseEntity) => {
       if (!entity.collides) return;
@@ -46,6 +48,8 @@ export default class BaseEntity extends Entity {
 
       this.applyForce(deltaDir, 2);
       entity.applyForce(deltaDir + Math.PI, 2);
+    
+      this.onCollisionCallback(entity);
     });
   }
 
