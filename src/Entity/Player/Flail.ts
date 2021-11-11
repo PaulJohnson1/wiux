@@ -13,7 +13,7 @@ export default class Flail extends BaseEntity {
     super(game);
     this.owner = owner;
 
-    this.size = 30;
+    this.size = 100;
     this.isAffectedByRope = true;
     this.collides = true;
 
@@ -22,11 +22,14 @@ export default class Flail extends BaseEntity {
 
   writeBinary(writer: Writer, isCreation: boolean) {
     if (isCreation) {
-      writer.vu(2); // flail type
+      writer.vu(1);
+
+      writer.string("");
+      writer.vu(this.owner.color);
     }
     
-    writer.vu(this.size);
     writer.vi(this.position.x);
     writer.vi(this.position.y);
+    writer.vu(this.size);
   }
 }

@@ -2,7 +2,6 @@ import Game from "../Game";
 import Vector from "../Vector";
 import Entity from "./Entity";
 
-
 /**
  * An entity that is visible and has physics
  */

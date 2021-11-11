@@ -28,13 +28,20 @@ export default class Rope extends Entity {
       this.segments.add(ropeSegment);
     }
 
-    this.segments.add(entity2)
+    this.segments.add(entity2);
   }
 
   writeBinary(writer: Writer, isCreation: boolean) {
     if (isCreation) {
-      writer.vu(3);
+      writer.vu(2);
+
+      writer.vu(this.segments.size);
     }
+
+    this.segments.forEach(segment => {
+      writer.vi(segment.position.x);
+      writer.vi(segment.position.y);
+    });
   }
 
   terminate() {

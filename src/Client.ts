@@ -2,17 +2,22 @@ import * as WebSocket from "ws";
 import Game from "./Game";
 import Player from "./Entity/Player/Player";
 import Entity from "./Entity/Entity";
-import BaseEntity from "./Entity/BaseEntity";
 import { Writer, Reader } from "./Coder";
 import { PlayerInputs } from "./types";
 
-export default class Client extends Player {
+export default class Client {
   public socket: WebSocket;
   public inputs: PlayerInputs;
+  public game: Game;
+  public player: Player | null;
   public view: Set<Entity>;
 
   constructor(game: Game, socket: WebSocket) {
-    super(game);
+    this.game = game;
+    
+    this.game.server.clients.add(this);
+
+    this.player = null;
 
     this.view = new Set();
     this.inputs = { angle: 0, distance: 0 };
@@ -27,6 +32,11 @@ export default class Client extends Player {
       if (packetType === 0) {
         this.inputs.angle = reader.vi() / 64;
         this.inputs.distance = reader.vu();
+      } else if (packetType === 1) {
+        if (this.player != null) return;
+        const name = reader.string();
+        this.player = new Player(this.game, name, this);
+        this.sendPlayerId();
       }
     });
   }
@@ -35,8 +45,18 @@ export default class Client extends Player {
     const writer = new Writer();
     writer.vu(1);
 
-    writer.vu(this.id);
     writer.vu(this.game.size);
+
+    this.socket.send(writer.write());
+  }
+
+  sendPlayerId() {
+    if (this.player == null) throw new Error("cannot write player id");
+
+    const writer = new Writer();
+    writer.vu(2);
+
+    writer.vu(this.player.id);
 
     this.socket.send(writer.write());
   }
@@ -49,6 +69,8 @@ export default class Client extends Player {
     const entitiesInView = this.game.entities;
 
     this.view.forEach((entity: Entity) => {
+      if (!entity.sentToClient) return;
+
       if (!entitiesInView.has(entity)) {
         this.view.delete(entity);
         writer.vu(entity.id);
@@ -58,6 +80,8 @@ export default class Client extends Player {
     writer.vu(0);
 
     entitiesInView.forEach((entity: Entity) => {
+      if (!entity.sentToClient) return;
+
       const isCreation = !this.view.has(entity);
 
       if (isCreation) this.view.add(entity);
@@ -72,15 +96,24 @@ export default class Client extends Player {
     this.socket.send(writer.write());
   }
 
-  terminate() {
-    super.terminate();
+  killPlayer() {
+    if (this.player == null) throw new Error("tried to kill nonexistant player");
+
+    this.player.terminate();
+  }
+
+  terminateSocket() {
+    if (this.player != null) this.player.terminate();
+
+    this.game.server.clients.delete(this);
   }
 
   tick(tick: number) {
-    if (this.inputs.distance > 80) this.applyForce(this.inputs.angle, 1);
-
     this.sendUpdate();
+    if (this.player == null) return;
 
-    super.tick(tick);
+    if (this.inputs.distance > 80) this.player.applyForce(this.inputs.angle, 1);
+
+    this.player.tick(tick);
   }
 }

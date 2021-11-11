@@ -7,10 +7,13 @@ import { Writer } from "../Coder";
 export default class Entity {
   public game: Game;
   public id: number;
+  public sentToClient: boolean;
 
   constructor(game: Game) {
     this.game = game;
     this.id = this.game.nextId++;
+
+    this.sentToClient = true;
 
     this.game.entities.add(this);
   }

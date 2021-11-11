@@ -9,7 +9,6 @@ export default class Game {
   /* used for getting an entity by its id */
   public _entities: { [id: number ]: Entity }; 
   public entities: Set<Entity>;
-
   public tickCount: number;
   public nextId: number;
   public size: number;
@@ -27,12 +26,6 @@ export default class Game {
     this.spatialHashing = new GameSpatialHashing(10, this);
 
     this.size = 850;
-
-    setInterval(() => {
-      console.time("tick");
-      this.tick(this.tickCount++);
-      console.timeEnd("tick");
-    }, 1000 / 40);
   }
 
   tick(tick: number) {
