@@ -72,5 +72,11 @@ export default class BaseEntity extends Entity {
     this.velocity = this.velocity.scale(0.95);
     this.position = this.position.add(this.velocity);
     this.collideWith(this.findCollisions());
+
+    const mag = this.position.mag;
+
+    if (mag + this.size > this.game.size) {
+      this.position = this.position.movePointByAngle(mag + this.size - this.game.size, this.position.dir + Math.PI);
+    }
   }
 }

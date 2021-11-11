@@ -46,7 +46,6 @@ export default class Client extends Player {
 
     writer.vu(0);
 
-    /** @ts-ignore */
     const entitiesInView = this.game.entities;
 
     this.view.forEach((entity: Entity) => {
