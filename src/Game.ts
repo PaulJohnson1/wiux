@@ -3,6 +3,7 @@ import Entity from "./Entity/Entity";
 import BaseEntity from "./Entity/BaseEntity";
 import Food from "./Entity/Food/Food";
 import GameSpatialHashing from "./SpatialHashing";
+import Vector from "./Vector";
 
 export default class Game {
   public server: Server;
@@ -13,7 +14,6 @@ export default class Game {
   public tickCount: number;
   public nextId: number;
   public size: number;
-  public ambientFoodConsentration: number;
   public spatialHashing: GameSpatialHashing;
 
   constructor(server: Server) {
@@ -27,7 +27,6 @@ export default class Game {
     this._entities = {};
 
     this.size = 850;
-    this.ambientFoodConsentration = 20;
   }
 
   tick(tick: number) {
@@ -47,18 +46,10 @@ export default class Game {
 
     this.entities.forEach(entity => entity.tick(tick));
 
-    for (let x = -this.size; x < this.size; x += Math.random() * this.ambientFoodConsentration) {
-      y: for (let y = -this.size; y < this.size; y += Math.random() * this.ambientFoodConsentration) {
-        if (x ** 2 + y ** 2 > this.size ** 2) continue y;
+    if (this.server.clients.size > 0) {
+      const food = new Food(this, Math.random() * 1000);
 
-        const noiseValue = Math.random(); 
-
-        if (noiseValue > 0.99999) {
-          const food = new Food(this, 100);
-          food.position.x = x;
-          food.position.y = y;
-        }
-      }
+      food.position = Vector.fromPolar(Math.random() * 7, Math.random() * this.size);     
     }
   }
 }

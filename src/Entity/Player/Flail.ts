@@ -46,7 +46,6 @@ export default class Flail extends BaseEntity {
 
     const foodCount = this.size;
 
-
     for (let i = 0; i < foodCount; i++) {
       const food = new Food(this.game, area / foodCount);
 
@@ -56,14 +55,7 @@ export default class Flail extends BaseEntity {
   }
 
   tick(tick: number) {
-    if (this.rope == null) return;
-  
-    const segments = Array.from(this.rope.segments);
-  
-    const last = segments[segments.length - 1];
-    const secondLast = segments[segments.length - 2];
-
-    if (!last || !secondLast) throw new Error("rope needs to have more than 1 segment");
+    this.restLength = this.size;
 
     super.tick(tick);
   }

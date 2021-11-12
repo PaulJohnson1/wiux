@@ -22,7 +22,6 @@ export default class BaseEntity extends Entity {
 
     this.size = 0;
     this.restLength = 0;
-
     this.collides = false;
     this.detectsCollision = false;
     this.isAffectedByRope = false;

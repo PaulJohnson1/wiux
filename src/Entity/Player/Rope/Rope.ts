@@ -63,7 +63,7 @@ export default class Rope extends Entity {
       const b = segments[i];
 
       const delta = a.position.subtract(b.position);
-      const x = delta.mag - a.restLength + b.restLength;
+      const x = delta.mag - (a.restLength + b.restLength);
       
       let force = delta.unitVector.scale(-this.k * x);
       
