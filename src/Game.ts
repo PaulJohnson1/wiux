@@ -38,7 +38,7 @@ export default class Game {
     });
 
     this.entities.forEach(entity => {
-      if (!(entity instanceof BaseEntity)) return;
+      if (!(entity instanceof BaseEntity) || !entity.detectsCollision) return;
 
       this.spatialHashing.insert(entity);
     });

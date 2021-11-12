@@ -11,6 +11,7 @@ export default class BaseEntity extends Entity {
   public size: number;
   public isAffectedByRope: boolean;
   public collides: boolean;
+  public detectsCollision: boolean;
 
   constructor(game: Game) {
     super(game);
@@ -20,6 +21,7 @@ export default class BaseEntity extends Entity {
 
     this.size = 0;
     this.collides = false;
+    this.detectsCollision = false;
     this.isAffectedByRope = false;
   }
 
@@ -41,21 +43,21 @@ export default class BaseEntity extends Entity {
 
   collideWith(entities: Set<BaseEntity>) {
     entities.forEach((entity: BaseEntity) => {
-      if (!entity.collides) return;
+      if (entity.detectsCollision) this.onCollisionCallback(entity);
+
+      if (!entity.collides || !this.collides) return;
       const delta = entity.position.subtract(this.position);
       const deltaDir = delta.dir;
 
       this.applyForce(deltaDir, 2);
       entity.applyForce(deltaDir + Math.PI, 2);
-    
-      this.onCollisionCallback(entity);
     });
   }
 
   findCollisions(): Set<BaseEntity> {
     const ret: Set<BaseEntity> = new Set();
 
-    if (!this.collides) return ret;
+    if (!this.detectsCollision) return ret;
 
     /** @ts-ignore */
     this.game.spatialHashing.query(this).forEach((entity: BaseEntity) => {

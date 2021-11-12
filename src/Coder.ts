@@ -4,8 +4,10 @@ const u8 = new Uint8Array(convo)
 const i32 = new Uint32Array(convo)
 const float = new Float32Array(convo)
 
+const buffer = new Uint8Array(67_108_864)
+
 const endianSwap = (val: number) =>
-    ((val & 0xff) << 24)
+  ((val & 0xff) << 24)
   | ((val & 0xff00) << 8)
   | ((val >> 8) & 0xff00)
   | ((val >> 24) & 0xff)
@@ -16,7 +18,7 @@ export class Writer {
 
   constructor() {
     this.length = 0
-    this.buffer = new Uint8Array(4096)
+    this.buffer = buffer;
   }
   i8(num: number) {
     this.buffer[this.length] = num

@@ -3,6 +3,7 @@ import BaseEntity from "../../BaseEntity";
 import Game from "../../../Game";
 import RopeSegment from "./RopeSegment";
 import Player from "../Player";
+import Vector from "../../../Vector";
 import { Writer } from "../../../Coder";
 
 export default class Rope extends Entity {
