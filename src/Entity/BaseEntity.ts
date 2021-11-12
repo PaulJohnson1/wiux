@@ -9,6 +9,7 @@ export default class BaseEntity extends Entity {
   public position: Vector;
   public velocity: Vector;
   public size: number;
+  public restLength: number;
   public isAffectedByRope: boolean;
   public collides: boolean;
   public detectsCollision: boolean;
@@ -20,6 +21,8 @@ export default class BaseEntity extends Entity {
     this.velocity = new Vector(0, 0);
 
     this.size = 0;
+    this.restLength = 0;
+
     this.collides = false;
     this.detectsCollision = false;
     this.isAffectedByRope = false;

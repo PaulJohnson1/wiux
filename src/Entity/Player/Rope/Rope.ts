@@ -26,6 +26,8 @@ export default class Rope extends Entity {
     for (let i = 0; i < this.length; i++) {
       const ropeSegment = new RopeSegment(this.game, this);
 
+      ropeSegment.restLength = this.restLength;
+
       this.segments.add(ropeSegment);
     }
 
@@ -61,7 +63,7 @@ export default class Rope extends Entity {
       const b = segments[i];
 
       const delta = a.position.subtract(b.position);
-      const x = delta.mag - this.restLength;
+      const x = delta.mag - a.restLength + b.restLength;
       
       let force = delta.unitVector.scale(-this.k * x);
       
