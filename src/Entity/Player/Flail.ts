@@ -45,7 +45,7 @@ export default class Flail extends BaseEntity {
     const area = this.area;
 
     const foodCount = this.size;
-    const foodSize = area / foodCount / 10;
+    const foodSize = area / foodCount / 1;
 
     for (let i = 0; i < foodCount; i++) {
       const food = new Food(this.game, foodSize);
@@ -56,7 +56,9 @@ export default class Flail extends BaseEntity {
   }
 
   tick(tick: number) {
-    if (this.size > this.game.size / 3) this.size = this.game.size / 3;
+    // if (this.size > this.game.size / 3) this.size = this.game.size / 3;
+
+    this.area *= 0.999;
 
     this.restLength = this.size;
 

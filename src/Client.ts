@@ -72,7 +72,7 @@ export default class Client {
     /** @ts-ignore */
     const entitiesInView = new Set(this.game.spatialHashing.query({
       position: this.player.position,
-      size: 1000,
+      size: 700,
     })) as Set<Entity>;
 
     this.view.forEach((entity: Entity) => {

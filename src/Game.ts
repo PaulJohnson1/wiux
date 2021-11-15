@@ -22,7 +22,7 @@ export default class Game {
     this.nextId = 1; // this `1` is needed since entities are null terminated in the protocol
     this.tickCount = 0;
 
-    this.spatialHashing = new GameSpatialHashing(70, this);
+    this.spatialHashing = new GameSpatialHashing(6, this);
     this.entities = new Set();
     this._entities = {};
 

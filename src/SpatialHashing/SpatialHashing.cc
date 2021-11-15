@@ -34,10 +34,10 @@ public:
 
     void getHashes(Box box, std::vector<i32> *out)
     {
-        i32 const startX = (box.x - box.w) / cellSize;
-        i32 const startY = (box.y - box.h) / cellSize;
-        i32 const endX = (box.x + box.w) / cellSize;
-        i32 const endY = (box.y + box.h) / cellSize;
+        i32 const startX = (box.x - box.w) >> cellSize;
+        i32 const startY = (box.y - box.h) >> cellSize;
+        i32 const endX = (box.x + box.w) >> cellSize;
+        i32 const endY = (box.y + box.h) >> cellSize;
 
         for (i32 x = startX; x <= endX; x++)
         {
