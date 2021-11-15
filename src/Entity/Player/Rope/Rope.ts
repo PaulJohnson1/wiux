@@ -6,10 +6,9 @@ import Player from "../Player";
 import Vector from "../../../Vector";
 import { Writer } from "../../../Coder";
 
-export default class Rope extends Entity {
+export default class Rope extends BaseEntity {
   private k: number;
   public length: number;
-  public restLength: number;
   public segments: Set<BaseEntity>;
   public owner: Player;
 
@@ -20,6 +19,8 @@ export default class Rope extends Entity {
     this.k = springConstant;
     this.restLength = restLength;
     this.owner = entity1;
+
+    this.detectsCollision = false;
 
     this.segments = new Set([this.owner]);
 
@@ -33,6 +34,14 @@ export default class Rope extends Entity {
 
     this.segments.add(entity2);
   }
+
+  /** @ts-ignore */
+  get position() {
+    return this.owner.position;
+  }
+
+  /** @ts-ignore */
+  set position(a: any) {}
 
   writeBinary(writer: Writer, isCreation: boolean) {
     if (isCreation) {

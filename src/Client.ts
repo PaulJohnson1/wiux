@@ -20,7 +20,7 @@ export default class Client {
     this.player = null;
 
     this.view = new Set();
-    this.inputs = { angle: 0, distance: 0 };
+    this.inputs = { angle: 0, distance: 0, mousePressed: false };
     this.socket = socket;
 
     this.sendInit();
@@ -30,6 +30,7 @@ export default class Client {
 
       const packetType = reader.vu();
       if (packetType === 0) {
+        this.inputs.mousePressed = !!reader.vu();
         this.inputs.angle = reader.vi() / 64;
         this.inputs.distance = reader.vu();
       } else if (packetType === 1) {
@@ -62,11 +63,17 @@ export default class Client {
   }
 
   sendUpdate() {
+    if (!this.player) return;
+
     const writer = new Writer();
 
     writer.vu(0);
 
-    const entitiesInView = this.game.entities;
+    /** @ts-ignore */
+    const entitiesInView = new Set(this.game.spatialHashing.query({
+      position: this.player.position,
+      size: 1000,
+    })) as Set<Entity>;
 
     this.view.forEach((entity: Entity) => {
       if (!entity.sentToClient) return;
@@ -93,6 +100,7 @@ export default class Client {
 
     writer.vu(0);
 
+    console.log(new Uint8Array(writer.write()).length);
     this.socket.send(writer.write());
   }
 

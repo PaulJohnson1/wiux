@@ -26,7 +26,7 @@ export default class Game {
     this.entities = new Set();
     this._entities = {};
 
-    this.size = 850;
+    this.size = 3000;
   }
 
   tick(tick: number) {
@@ -39,7 +39,8 @@ export default class Game {
     });
 
     this.entities.forEach(entity => {
-      if (!(entity instanceof BaseEntity) || !entity.detectsCollision) return;
+      if (!(entity instanceof BaseEntity)) return;
+      if (!entity.sentToClient) return; // has to be in the collision manager to be sent
 
       this.spatialHashing.insert(entity);
     });
