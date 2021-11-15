@@ -18,7 +18,6 @@ export default class Player extends BaseEntity {
     this.name = name;
     this.client = client;
 
-
     this.size = 10;
     this.collides = true;
     this.detectsCollision = true;

@@ -59,7 +59,7 @@ export default class SpatialHashing {
         foundEntities[i] = this.game._entities[raw[i]] as BaseEntity;
       }
   
-      return foundEntities;
+      return foundEntities.filter(v => !!(v && v.position));
     }
 
     return raw;

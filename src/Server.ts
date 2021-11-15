@@ -27,7 +27,12 @@ export default class Server {
       });
     });
 
-    setInterval(() => this.tick(), 40);
+    setInterval(() => {
+      console.time("tick");
+      this.tick();
+      console.timeEnd("tick");
+      console.log("entities", this.game.entities.size);
+    }, 40);
   }
 
   tick() {

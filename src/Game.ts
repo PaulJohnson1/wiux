@@ -22,7 +22,7 @@ export default class Game {
     this.nextId = 1; // this `1` is needed since entities are null terminated in the protocol
     this.tickCount = 0;
 
-    this.spatialHashing = new GameSpatialHashing(10, this);
+    this.spatialHashing = new GameSpatialHashing(70, this);
     this.entities = new Set();
     this._entities = {};
 
@@ -46,7 +46,7 @@ export default class Game {
 
     this.entities.forEach(entity => entity.tick(tick));
 
-    if (this.server.clients.size > 0) {
+    while (this.entities.size < this.size) {
       const food = new Food(this, Math.random() * 1000);
 
       food.position = Vector.fromPolar(Math.random() * 7, Math.random() * this.size);     
