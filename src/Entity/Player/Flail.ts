@@ -31,7 +31,7 @@ export default class Flail extends BaseEntity {
     if (isCreation) {
       writer.vu(1);
 
-      writer.string("flail");
+      writer.string("");
 
       writer.vu(1);
 

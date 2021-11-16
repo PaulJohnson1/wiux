@@ -17,20 +17,6 @@ export default class Food extends BaseEntity {
     if (this.size < entity.size) {
       entity.area += this.area;
       super.terminate();
-    } else {
-      // knock both entities back a bit and slowly transfer the energy
-
-      const delta = entity.position.subtract(this.position);
-      const deltaDir = delta.dir;
-
-      this.applyForce(deltaDir, 2);
-      entity.applyForce(deltaDir + Math.PI, 2);
-
-      const oldArea = this.area;
-
-      this.area /= 1.1;
-
-      entity.area += oldArea - this.area;
     }
   }
 
