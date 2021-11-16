@@ -31,12 +31,13 @@ export default class Player extends BaseEntity {
 
     const flails = Array.from(this.flails);
 
-    const rope = new Rope(this.game, this, flail, 3, 0.9, 20);
+    const rope = new Rope(this.game, this, flail, 3, 0.1, 20);
     flail.rope = rope;
     this.ropes.add(rope);
 
     const secondFlail = new Flail(this.game, this)
-    const secondRope = new Rope(this.game, flail, secondFlail, 3, 0.9, 20);
+    const secondRope = new Rope(this.game, flail, secondFlail, 3, 0.5, 20);
+    this.ropes.add(secondRope);
 
     this.color = (Math.random() * 0xFFFFFF) | 33554432;
   }
@@ -62,6 +63,8 @@ export default class Player extends BaseEntity {
       writer.vu(1);
       writer.string(this.name);
 
+      writer.vu(2);
+      
       writer.vu(this.color);
     }
     

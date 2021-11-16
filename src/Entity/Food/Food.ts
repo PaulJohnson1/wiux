@@ -37,7 +37,11 @@ export default class Food extends BaseEntity {
   writeBinary(writer: Writer, isCreation: boolean) {
     if (isCreation) {
       writer.vu(1);
+
       writer.string("");
+      
+      writer.vu(0);
+
       writer.vu((Math.random() * 0xFFFFFF) | 33554432);
     }
 
