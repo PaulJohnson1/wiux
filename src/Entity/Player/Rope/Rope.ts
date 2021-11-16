@@ -10,9 +10,9 @@ export default class Rope extends BaseEntity {
   private k: number;
   public length: number;
   public segments: Set<BaseEntity>;
-  public owner: Player;
+  public owner: BaseEntity;
 
-  constructor(game: Game, entity1: Player, entity2: BaseEntity, length: number, springConstant: number, restLength: number) {
+  constructor(game: Game, entity1: BaseEntity, entity2: BaseEntity, length: number, springConstant: number, restLength: number) {
     super(game);
 
     this.length = length;

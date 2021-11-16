@@ -58,7 +58,7 @@ export default class Flail extends BaseEntity {
   tick(tick: number) {
     // if (this.size > this.game.size / 3) this.size = this.game.size / 3;
 
-    this.area *= 0.999;
+    this.area *= 0.995;
 
     this.restLength = this.size;
 

@@ -83,7 +83,7 @@ export const benchmark = (it: number) => {
 
   const asht = new Prng(136345);
 
-  const test = new SpatialHashing(170, null);
+  const test = new SpatialHashing(8, null);
 
   const start = Date.now();
 

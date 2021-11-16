@@ -7,8 +7,10 @@ init();
 // import { benchmark } from "./src/SpatialHashing";
 
 // const times: any = [];
-// for (let i = 0; i < 100_000; i += 100) {
-//   const time = [i, benchmark(i)];
+// for (let i = 0; i < 1000; i++) {
+//   const items = i * i;
+
+//   const time = [items, benchmark(items)];
 
 //   times.push(time);
 //   console.log(time);
