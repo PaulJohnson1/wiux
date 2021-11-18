@@ -23,8 +23,6 @@ export default class Flail extends BaseEntity {
     this.isAffectedByRope = true;
     this.collides = true;
     this.detectsCollision = true;
-
-    this.owner.flails.add(this);
   }
 
   writeBinary(writer: Writer, isCreation: boolean) {

@@ -3,11 +3,12 @@ import BaseEntity from "../BaseEntity";
 import Flail from "./Flail";
 import Rope from "./Rope/Rope";
 import Client from "../../Client";
+import BasicFlail from "./FlailDefinitions/Basic";
+import FlailDefinition from "./FlailDefinitions/BaseDefinition";
 import { Writer } from "../../Coder";
 
 export default class Player extends BaseEntity {
-  public flails: Set<Flail>;
-  public ropes: Set<Rope>;
+  public weapon: FlailDefinition;
   public client?: Client;
   public name: string;
   public color: number;
@@ -24,22 +25,15 @@ export default class Player extends BaseEntity {
 
     this.restLength = this.size;
 
-    this.flails = new Set();
-    this.ropes = new Set();
+    this.weapon = new BasicFlail(this);
 
-    const flail = new Flail(this.game, this);
-
-    const rope = new Rope(this.game, this, flail, 3, 0.1, 20);
-    flail.rope = rope;
-    this.ropes.add(rope);
 
     this.color = (Math.random() * 0xFFFFFF) | 33554432;
   }
 
   terminate() {
     super.terminate();
-    this.flails.forEach(flail => flail.terminate());
-    this.ropes.forEach(rope => rope.terminate());
+    this.weapon.terminate();
 
     if (this.client != null) this.client.player = null;
   }
