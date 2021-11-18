@@ -56,9 +56,7 @@ export default class Player extends BaseEntity {
     if (isCreation) {
       writer.vu(1);
       writer.string(this.name);
-
       writer.vu(2);
-      
       writer.vu(this.color);
     }
     

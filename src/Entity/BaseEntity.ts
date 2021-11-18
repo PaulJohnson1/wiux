@@ -8,6 +8,7 @@ import Entity from "./Entity";
 export default class BaseEntity extends Entity {
   public position: Vector;
   public velocity: Vector;
+  public name: string;
   public size: number;
   public restLength: number;
   public isAffectedByRope: boolean;
@@ -20,6 +21,7 @@ export default class BaseEntity extends Entity {
     this.position = new Vector(0, 0);
     this.velocity = new Vector(0, 0);
 
+    this.name = "";
     this.size = 0;
     this.restLength = 0;
     this.collides = false;

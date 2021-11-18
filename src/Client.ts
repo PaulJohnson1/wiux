@@ -100,7 +100,6 @@ export default class Client {
 
     writer.vu(0);
 
-    console.log(new Uint8Array(writer.write()).length);
     this.socket.send(writer.write());
   }
 

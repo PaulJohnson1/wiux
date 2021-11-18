@@ -22,7 +22,7 @@ export default class Food extends BaseEntity {
     if (isCreation) {
       writer.vu(1);
 
-      writer.string("");
+      writer.string(this.name);
       
       writer.vu(0);
 

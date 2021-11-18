@@ -30,11 +30,8 @@ export default class Flail extends BaseEntity {
   writeBinary(writer: Writer, isCreation: boolean) {
     if (isCreation) {
       writer.vu(1);
-
-      writer.string("");
-
+      writer.string(this.name);
       writer.vu(1);
-
       writer.vu(this.owner.color);
     }
 

@@ -29,6 +29,13 @@ export default class Game {
     this.size = 3000;
   }
 
+  makeFood() {
+      const food = new Food(this, Math.random() * 1000);
+
+      food.position = Vector.fromPolar(Math.random() * 7, Math.random() * this.size);     
+    
+  }
+
   tick(tick: number) {
     this.spatialHashing.clear();
 
@@ -47,10 +54,8 @@ export default class Game {
 
     this.entities.forEach(entity => entity.tick(tick));
 
-    while (this.entities.size < this.size) {
-      const food = new Food(this, Math.random() * 1000);
-
-      food.position = Vector.fromPolar(Math.random() * 7, Math.random() * this.size);     
+    if (this.entities.size < this.size) {
+      this.makeFood();
     }
   }
 }
