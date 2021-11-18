@@ -11,7 +11,8 @@
     "inlineSources": true,
     "types": ["node"],
     "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "outDir": "./dist"
   },
   "include": ["./src"]
 }

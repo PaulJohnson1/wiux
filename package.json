@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "node-gyp rebuild"
+    "build": "tsc; node-gyp rebuild",
+    "start": "npm run build; node dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +14,7 @@
     "@types/node": "^16.11.6",
     "@types/ws": "^8.2.0",
     "node-gyp": "^8.4.0",
+    "typescript": "^4.5.2",
     "ws": "^8.2.3"
   }
 }
