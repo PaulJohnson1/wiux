@@ -14,10 +14,8 @@ export default class Food extends BaseEntity {
   onCollisionCallback(entity: BaseEntity) {
     if (!(entity instanceof Flail)) return;
 
-    if (this.size < entity.size) {
-      entity.area += this.area;
-      super.terminate();
-    }
+    entity.area += this.area;
+    super.terminate();
   }
 
   writeBinary(writer: Writer, isCreation: boolean) {
