@@ -24,11 +24,11 @@ export default class Generator extends BaseEntity {
     // entity.applyForce(dir + Math.PI, 2);
 
     if (entity instanceof Flail || entity instanceof Player) {
-      const food = new Food(this.game, 100);
+      const food = new Food(this.game, 1000);
 
       food.position = this.position;
 
-      food.applyForce(dir + Math.random() * 0.3 - 0.15, 10 + Math.random() * 5);
+      food.applyForce(dir + Math.random() * 0.3 - 0.15, 20 + Math.random() * 10);
     }
 
     let x1 = this.position.x;
