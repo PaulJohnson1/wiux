@@ -2,6 +2,7 @@ import * as WebSocket from "ws";
 import Game from "./Game";
 import Player from "./Entity/Player/Player";
 import Entity from "./Entity/Entity";
+import Vector from "./Vector";
 import { Writer, Reader } from "./Coder";
 import { PlayerInputs } from "./types";
 
@@ -63,15 +64,13 @@ export default class Client {
   }
 
   sendUpdate() {
-    if (!this.player) return;
-
     const writer = new Writer();
 
     writer.vu(0);
 
     /** @ts-ignore */
     const entitiesInView = new Set(this.game.spatialHashing.query({
-      position: this.player.position,
+      position: this.player ? this.player.position : new Vector(0, 0),
       size: 700,
     })) as Set<Entity>;
 
