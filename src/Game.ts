@@ -1,7 +1,7 @@
 import Server from "./Server";
 import Entity from "./Entity/Entity";
 import BaseEntity from "./Entity/BaseEntity";
-import Food from "./Entity/Food/Food";
+import Generator from "./Entity/Food/Generator";
 import GameSpatialHashing from "./SpatialHashing";
 import Vector from "./Vector";
 
@@ -27,13 +27,19 @@ export default class Game {
     this._entities = {};
 
     this.size = 3000;
-  }
 
-  makeFood() {
-      const food = new Food(this, Math.random() * 1000);
+    const generators = 4;
 
-      food.position = Vector.fromPolar(Math.random() * 7, Math.random() * this.size);     
-    
+    for (let i = 0; i < generators; i++) {
+      let pos = new Vector(0, 0);
+
+      while (pos.mag < 400) {
+        pos = Vector.fromPolar(Math.random() * 6, Math.random() * this.size);
+      }
+
+      const generator = new Generator(this);
+      generator.position = pos;
+    }
   }
 
   tick(tick: number) {
@@ -53,9 +59,5 @@ export default class Game {
     });
 
     this.entities.forEach(entity => entity.tick(tick));
-
-    if (this.entities.size < this.size) {
-      this.makeFood();
-    }
   }
 }

@@ -41,8 +41,6 @@ export default class Player extends BaseEntity {
   onCollisionCallback(entity: BaseEntity) {
     if (entity instanceof Flail && entity.owner !== this) {
       this.terminate();
-
-      entity.area += this.area;
     }
   }
 
