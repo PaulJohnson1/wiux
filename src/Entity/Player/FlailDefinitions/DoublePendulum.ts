@@ -13,7 +13,7 @@ export default class BasicFlail extends BaseDefinition {
       this.owner,
       this.flails[0],
       3,
-      0.1,
+      0.6,
       20
     );
 
@@ -23,7 +23,7 @@ export default class BasicFlail extends BaseDefinition {
       this.flails[0],
       this.flails[1],
       3,
-      0.1,
+      0.6,
       20
     );
   }
