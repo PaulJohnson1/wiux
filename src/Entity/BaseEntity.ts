@@ -18,7 +18,7 @@ export default class BaseEntity extends Entity {
   constructor(game: Game) {
     super(game);
 
-    this.position = new Vector(0, 0);
+    this.position = Vector.fromPolar(Math.random() * 7, (Math.random() * Math.sqrt(this.game.size)) ** 2);
     this.velocity = new Vector(0, 0);
 
     this.name = "";
