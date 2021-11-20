@@ -109,12 +109,12 @@ export default class Client {
   }
 
   tick(tick: number) {
+    this.sendUpdate();
+
     if (this.player == null) return;
 
     if (this.inputs.distance > 80) this.player.applyForce(this.inputs.angle, 1);
 
     this.player.tick(tick);
-
-    this.sendUpdate();
   }
 }
