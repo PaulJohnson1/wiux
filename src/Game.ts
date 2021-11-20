@@ -7,13 +7,14 @@ import Vector from "./Vector";
 
 export default class Game {
   public server: Server;
-  
+
   /* used for getting an entity by its id */
-  public _entities: { [id: number ]: Entity }; 
+  public _entities: { [id: number]: Entity };
   public entities: Set<Entity>;
   public tickCount: number;
   public nextId: number;
   public size: number;
+  public windDirection: number;
   public spatialHashing: GameSpatialHashing;
 
   constructor(server: Server) {
@@ -27,22 +28,20 @@ export default class Game {
     this._entities = {};
 
     this.size = 3000;
+    this.windDirection = 0;
 
     const generators = 4;
 
     for (let i = 0; i < generators; i++) {
-      let pos = new Vector(0, 0);
-
-      while (pos.mag < 400) {
-        pos = Vector.fromPolar(Math.random() * 6, Math.random() * this.size);
-      }
-
+      const pos = Vector.fromPolar(Math.random() * 6, Math.random() * this.size);
       const generator = new Generator(this);
       generator.position = pos;
     }
   }
 
   tick(tick: number) {
+    this.windDirection += Math.random() * 0.05 - 0.0225;
+
     this.spatialHashing.clear();
 
     this._entities = {};

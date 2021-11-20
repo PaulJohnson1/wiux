@@ -11,9 +11,10 @@ export default class BaseEntity extends Entity {
   public name: string;
   public size: number;
   public restLength: number;
-  public isAffectedByRope: boolean;
   public collides: boolean;
   public detectsCollision: boolean;
+  public isAffectedByRope: boolean;
+  public isAffectedByWind: boolean;
 
   constructor(game: Game) {
     super(game);
@@ -22,11 +23,14 @@ export default class BaseEntity extends Entity {
     this.velocity = new Vector(0, 0);
 
     this.name = "";
+
     this.size = 0;
     this.restLength = 0;
+
     this.collides = false;
     this.detectsCollision = false;
     this.isAffectedByRope = false;
+    this.isAffectedByWind = false;
   }
 
   get area() {
@@ -86,6 +90,10 @@ export default class BaseEntity extends Entity {
 
     if (mag + this.size > this.game.size) {
       this.position = this.position.movePointByAngle(mag + this.size - this.game.size, this.position.dir + Math.PI);
+    }
+
+    if (this.isAffectedByWind) {
+      this.position = this.position.add(Vector.fromPolar(this.game.windDirection, 0.3));
     }
   }
 }
