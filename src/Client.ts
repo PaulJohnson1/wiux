@@ -102,12 +102,6 @@ export default class Client {
     this.socket.send(writer.write());
   }
 
-  killPlayer() {
-    if (this.player == null) throw new Error("tried to kill nonexistant player");
-
-    this.player.terminate();
-  }
-
   terminateSocket() {
     if (this.player != null) this.player.terminate();
 
