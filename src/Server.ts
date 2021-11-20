@@ -6,12 +6,9 @@ export default class Server {
   public server: WebSocket.Server;
   public game: Game;
   public clients: Set<Client>;
-  public deltaTime: number;
 
   constructor(server: WebSocket.Server) {
     this.server = server;
-
-    this.deltaTime = 0;
 
     this.clients = new Set();
     this.game = new Game(this);

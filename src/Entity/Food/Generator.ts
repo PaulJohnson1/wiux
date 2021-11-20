@@ -3,19 +3,24 @@ import Food from "./Food";
 import Flail from "../Player/Flail";
 import Player from "../Player/Player"
 import Game from "../../Game";
-import Vector from "../../Vector";
 import { Writer } from "../../Coder";
+
+const sizeAnimation = [
+  50, 51, 53, 56, 60,
+  67, 63, 58, 53, 50
+];
 
 export default class Generator extends BaseEntity {
   private lastHitTick: number;
+  private hitCooldown: number;
+  private animationTick: number;
   private canShootFood: boolean;
-
-  public hitCooldown: number;
 
   constructor(game: Game) {
     super(game);
 
     this.lastHitTick = 0;
+    this.animationTick = -1;
     this.canShootFood = true;
 
     this.hitCooldown = 10;
@@ -37,14 +42,16 @@ export default class Generator extends BaseEntity {
       this.canShootFood &&
       (entity instanceof Flail || entity instanceof Player)
     ) {
+      this.animationTick = 0;
+
       this.lastHitTick = this.game.tickCount;
 
       const foodCount = Math.sqrt(entity.velocity.mag);
 
       for (let i = 0; i < foodCount; i++) {
-        const food = new Food(this.game, 1000);
+        const food = new Food(this.game, Math.random() < 0.9 ? 200 : 1000);
         food.position = this.position;
-        food.applyForce(dir + Math.random() * 0.3 - 0.15, 8 + Math.random() * 4);
+        food.applyForce(dir + Math.random() * 0.3 - 0.15, Math.random() * 30);
       }
     }
   }
@@ -64,7 +71,13 @@ export default class Generator extends BaseEntity {
 
   tick(tick: number) {
     this.canShootFood = this.lastHitTick < tick - this.hitCooldown;
-  
+
+    if (this.animationTick !== -1 && this.animationTick < sizeAnimation.length - 2) {
+      this.animationTick++;
+    } else this.animationTick = -1;
+
+    if (this.animationTick !== -1) this.size = sizeAnimation[this.animationTick];
+
     super.tick(tick);
   }
 }
