@@ -15,7 +15,7 @@ export default class Client {
 
   constructor(game: Game, socket: WebSocket) {
     this.game = game;
-    
+
     this.game.server.clients.add(this);
 
     this.player = null;
@@ -113,7 +113,7 @@ export default class Client {
 
     if (this.player == null) return;
 
-    if (this.inputs.distance > 80) this.player.applyForce(this.inputs.angle, 1);
+    if (this.inputs.distance > 80) this.player.applyForce(this.inputs.angle, 0.4);
 
     this.player.tick(tick);
   }

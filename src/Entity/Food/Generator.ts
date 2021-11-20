@@ -18,7 +18,7 @@ export default class Generator extends BaseEntity {
     this.lastHitTick = 0;
     this.canShootFood = true;
 
-    this.hitCooldown = 2;
+    this.hitCooldown = 10;
 
     this.collides = false;
     this.detectsCollision = true;
@@ -31,7 +31,7 @@ export default class Generator extends BaseEntity {
     const delta = entity.position.subtract(this.position);
     const dir = delta.dir;
 
-    entity.applyForce(dir + Math.PI, 10);
+    entity.applyForce(dir + Math.PI, 4);
 
     if (
       this.canShootFood &&
@@ -39,12 +39,12 @@ export default class Generator extends BaseEntity {
     ) {
       this.lastHitTick = this.game.tickCount;
 
-      const foodCount = entity.velocity.mag / 10;
+      const foodCount = Math.sqrt(entity.velocity.mag);
 
       for (let i = 0; i < foodCount; i++) {
         const food = new Food(this.game, 1000);
         food.position = this.position;
-        food.applyForce(dir + Math.random() * 0.3 - 0.15, 20 + Math.random() * 10);
+        food.applyForce(dir + Math.random() * 0.3 - 0.15, 8 + Math.random() * 4);
       }
     }
   }

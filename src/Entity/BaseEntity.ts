@@ -53,8 +53,8 @@ export default class BaseEntity extends Entity {
       const delta = entity.position.subtract(this.position);
       const deltaDir = delta.dir;
 
-      this.applyForce(deltaDir, 2);
-      entity.applyForce(deltaDir + Math.PI, 2);
+      this.applyForce(deltaDir, 0.8);
+      entity.applyForce(deltaDir + Math.PI, 0.8);
     });
   }
 
