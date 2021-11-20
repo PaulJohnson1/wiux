@@ -5,9 +5,8 @@
 #include <algorithm>
 #include <node.h>
 
-typedef int32_t i32;
-
 using namespace robin_hood;
+
 struct Box
 {
     int32_t x;
@@ -24,26 +23,26 @@ struct Box
 class SpatialHash
 {
 public:
-    unordered_flat_map<i32, std::vector<Box>> cells;
-    i32 cellSize;
+    unordered_flat_map<int32_t, std::vector<Box>> cells;
+    int32_t cellSize;
 
-    SpatialHash(i32 cellSize)
+    SpatialHash(int32_t cellSize)
     {
         this->cellSize = cellSize;
     }
 
-    void getHashes(Box box, std::vector<i32> *out)
+    void getHashes(Box box, std::vector<int32_t> *out)
     {
-        i32 const startX = (box.x - box.w) >> cellSize;
-        i32 const startY = (box.y - box.h) >> cellSize;
-        i32 const endX = (box.x + box.w) >> cellSize;
-        i32 const endY = (box.y + box.h) >> cellSize;
+        int32_t const startX = (box.x - box.w) >> cellSize;
+        int32_t const startY = (box.y - box.h) >> cellSize;
+        int32_t const endX = (box.x + box.w) >> cellSize;
+        int32_t const endY = (box.y + box.h) >> cellSize;
 
-        for (i32 x = startX; x <= endX; x++)
+        for (int32_t x = startX; x <= endX; x++)
         {
-            for (i32 y = startY; y <= endY; y++)
+            for (int32_t y = startY; y <= endY; y++)
             {
-                i32 key = x + y * 46340; // magic number is sqrt(i32max)
+                int32_t key = x + y * 46340; // magic number is sqrt(int32_tmax)
 
                 out->push_back(key);
             }
@@ -52,7 +51,7 @@ public:
 
     void insert(Box box)
     {
-        std::vector<i32> keys;
+        std::vector<int32_t> keys;
         getHashes(box, &keys);
 
         int32_t keysLength = keys.size();
@@ -65,14 +64,14 @@ public:
 
     void query(Box box, std::vector<Box> *out)
     {
-        std::vector<i32> keys;
+        std::vector<int32_t> keys;
         getHashes(box, &keys);
 
         int32_t keysLength = keys.size();
 
         for (int32_t i = 0; i < keysLength; i++)
         {
-            i32 key = keys.at(i);
+            int32_t key = keys.at(i);
 
             std::vector<Box> cell = cells[key];
             int32_t length = cell.size();
@@ -158,16 +157,16 @@ SpatialHash spatialHash(20);
 
 void setCellSize(const FunctionCallbackInfo<Value> &rawArgs)
 {
-    spatialHash.cellSize = (i32)(rawArgs[0].As<Number>()->Value());
+    spatialHash.cellSize = (int32_t)(rawArgs[0].As<Number>()->Value());
 }
 
 void insert(const FunctionCallbackInfo<Value> &rawArgs)
 {
     Box box = {
-      (i32)(rawArgs[0].As<Number>()->Value()),
-      (i32)(rawArgs[1].As<Number>()->Value()),
-      (i32)(rawArgs[2].As<Number>()->Value()),
-      (i32)(rawArgs[3].As<Number>()->Value()),
+      (int32_t)(rawArgs[0].As<Number>()->Value()),
+      (int32_t)(rawArgs[1].As<Number>()->Value()),
+      (int32_t)(rawArgs[2].As<Number>()->Value()),
+      (int32_t)(rawArgs[3].As<Number>()->Value()),
       (uint16_t)(rawArgs[4].As<Number>()->Value())};
 
     spatialHash.insert(box);
@@ -179,10 +178,10 @@ void query(const FunctionCallbackInfo<Value> &rawArgs)
     Local<Context> context = isolate->GetCurrentContext();
 
     Box box = {
-      (i32)(rawArgs[0].As<Number>()->Value()),
-      (i32)(rawArgs[1].As<Number>()->Value()),
-      (i32)(rawArgs[2].As<Number>()->Value()),
-      (i32)(rawArgs[3].As<Number>()->Value()),
+      (int32_t)(rawArgs[0].As<Number>()->Value()),
+      (int32_t)(rawArgs[1].As<Number>()->Value()),
+      (int32_t)(rawArgs[2].As<Number>()->Value()),
+      (int32_t)(rawArgs[3].As<Number>()->Value()),
       (uint16_t)(rawArgs[4].As<Number>()->Value())};
 
     std::vector<Box> result;
