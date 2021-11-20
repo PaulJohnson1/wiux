@@ -5,24 +5,19 @@ import Player from "../Player/Player"
 import Game from "../../Game";
 import { Writer } from "../../Coder";
 
-const sizeAnimation = [
-  50, 51, 53, 56, 60,
-  67, 63, 58, 53, 50
-];
-
 export default class Generator extends BaseEntity {
   private lastHitTick: number;
   private hitCooldown: number;
-  private animationTick: number;
+  private animationSizeAddon: number;
   private canShootFood: boolean;
 
   constructor(game: Game) {
     super(game);
 
-    this.lastHitTick = 0;
-    this.animationTick = -1;
+    this.animationSizeAddon = 0;
     this.canShootFood = true;
 
+    this.lastHitTick = 0;
     this.hitCooldown = 10;
 
     this.collides = false;
@@ -42,8 +37,7 @@ export default class Generator extends BaseEntity {
       this.canShootFood &&
       (entity instanceof Flail || entity instanceof Player)
     ) {
-      this.animationTick = 0;
-
+      this.animationSizeAddon = 10;
       this.lastHitTick = this.game.tickCount;
 
       const foodCount = Math.sqrt(entity.velocity.mag);
@@ -66,17 +60,13 @@ export default class Generator extends BaseEntity {
 
     writer.vi(this.position.x);
     writer.vi(this.position.y);
-    writer.vu(this.size);
+    writer.vu(this.size + this.animationSizeAddon);
   }
 
   tick(tick: number) {
     this.canShootFood = this.lastHitTick < tick - this.hitCooldown;
 
-    if (this.animationTick !== -1 && this.animationTick < sizeAnimation.length - 2) {
-      this.animationTick++;
-    } else this.animationTick = -1;
-
-    if (this.animationTick !== -1) this.size = sizeAnimation[this.animationTick];
+    this.animationSizeAddon *= 0.7;
 
     super.tick(tick);
   }
