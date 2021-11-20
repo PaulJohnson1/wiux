@@ -36,7 +36,7 @@ export default class Client {
         this.inputs.distance = reader.vu();
       } else if (packetType === 1) {
         if (this.player != null) return;
-        const name = reader.string();
+        const name = reader.string().substring(0, 50);
         this.player = new Player(this.game, name, this);
         this.sendPlayerId();
       }
@@ -71,7 +71,7 @@ export default class Client {
     /** @ts-ignore */
     const entitiesInView = new Set(this.game.spatialHashing.query({
       position: this.player ? this.player.position : new Vector(0, 0),
-      size: 700,
+      size: 1100,
     })) as Set<Entity>;
 
     this.view.forEach((entity: Entity) => {
