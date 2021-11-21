@@ -24,7 +24,6 @@ class SpatialHash
 {
 public:
     unordered_flat_map<int32_t, std::vector<Box>> cells;
-    int32_t cellSize;
 
     SpatialHash()
     {
@@ -32,10 +31,10 @@ public:
 
     void getHashes(Box box, std::vector<int32_t> *out)
     {
-        int32_t const startX = (box.x - box.w) >> 12;
-        int32_t const startY = (box.y - box.h) >> 12;
-        int32_t const endX = (box.x + box.w) >> 12;
-        int32_t const endY = (box.y + box.h) >> 12;
+        int32_t const startX = (box.x - box.w) >> 6;
+        int32_t const startY = (box.y - box.h) >> 6;
+        int32_t const endX = (box.x + box.w) >> 6;
+        int32_t const endY = (box.y + box.h) >> 6;
 
         for (int32_t x = startX; x <= endX; x++)
         {

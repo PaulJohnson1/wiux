@@ -12,6 +12,7 @@ export default class Client {
   public game: Game;
   public player: Player | null;
   public view: Set<Entity>;
+  public stats: number[];
 
   constructor(game: Game, socket: WebSocket) {
     this.game = game;
@@ -19,6 +20,8 @@ export default class Client {
     this.game.server.clients.add(this);
 
     this.player = null;
+
+    this.stats = [0, 0, 0, 0, 0, 0]
 
     this.view = new Set();
     this.inputs = { angle: 0, distance: 0, mousePressed: false };
@@ -36,9 +39,31 @@ export default class Client {
         this.inputs.distance = reader.vu();
       } else if (packetType === 1) {
         if (this.player != null) return;
+        
         const name = reader.string().substring(0, 50);
         this.player = new Player(this.game, name, this);
         this.sendPlayerId();
+      } else if (packetType === 2) {
+        if (this.player == null) return;
+
+        const id = reader.vu();
+
+        if (this.stats[id] == null) return;
+
+        this.stats[id]++;
+
+        // if (id === 0) { // flail knockback
+        //   this.player.weapon.flails.forEach(flail => {
+        //     flail.knockbackFactor  =
+        //   })
+        // }
+
+        const writer = new Writer();
+        writer.vu(3);
+        writer.vu(id);
+        writer.vu(this.stats[id]);
+
+        this.socket.send(writer.write());
       }
     });
   }
