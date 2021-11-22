@@ -54,7 +54,7 @@ export default class Client {
 
         // if (id === 0) { // flail knockback
         //   this.player.weapon.flails.forEach(flail => {
-        //     flail.knockbackFactor  =
+        //     flail.knockback  =
         //   })
         // }
 

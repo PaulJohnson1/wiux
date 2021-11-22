@@ -20,7 +20,10 @@ export default class Generator extends BaseEntity {
     this.lastHitTick = 0;
     this.hitCooldown = 10;
 
-    this.collides = false;
+    this.knockback = 5;
+    this.resistance = 0;
+
+    this.collides = true;
     this.detectsCollision = true;
     this.size = 50;
   }
@@ -30,8 +33,6 @@ export default class Generator extends BaseEntity {
 
     const delta = entity.position.subtract(this.position);
     const dir = delta.dir;
-
-    entity.applyForce(dir + Math.PI, 4);
 
     if (
       this.canShootFood &&

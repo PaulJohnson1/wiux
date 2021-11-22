@@ -8,9 +8,14 @@ import Entity from "./Entity";
 export default class BaseEntity extends Entity {
   public position: Vector;
   public velocity: Vector;
+
   public name: string;
+
   public size: number;
   public restLength: number;
+  public resistance: number;
+  public knockback: number;
+
   public collides: boolean;
   public detectsCollision: boolean;
   public isAffectedByRope: boolean;
@@ -26,6 +31,9 @@ export default class BaseEntity extends Entity {
 
     this.size = 0;
     this.restLength = 0;
+
+    this.knockback = 0.9;
+    this.resistance = 0.9;
 
     this.collides = false;
     this.detectsCollision = false;
@@ -57,8 +65,8 @@ export default class BaseEntity extends Entity {
       const delta = entity.position.subtract(this.position);
       const deltaDir = delta.dir;
 
-      this.applyForce(deltaDir, 0.8);
-      entity.applyForce(deltaDir + Math.PI, 0.8);
+      this.applyForce(deltaDir, entity.knockback * this.resistance);
+      entity.applyForce(deltaDir + Math.PI, this.knockback * entity.resistance);
     });
   }
 
