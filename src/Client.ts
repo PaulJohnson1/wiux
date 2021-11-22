@@ -42,6 +42,7 @@ export default class Client {
         
         const name = reader.string().substring(0, 50);
         this.player = new Player(this.game, name, this);
+        this.stats = [0, 0, 0, 0, 0, 0]
         this.sendPlayerId();
       } else if (packetType === 2) {
         if (this.player == null) return;
@@ -52,11 +53,19 @@ export default class Client {
 
         this.stats[id]++;
 
-        // if (id === 0) { // flail knockback
-        //   this.player.weapon.flails.forEach(flail => {
-        //     flail.knockback  =
-        //   })
-        // }
+        if (id === 0) { // flail knockback
+          this.player.weapon.flails.forEach(flail => {
+            flail.knockback += 0.1;
+          });
+        } else if (id === 1) { // flail resitance
+          this.player.weapon.flails.forEach(flail => {
+            flail.resistance *= 0.9;
+          });
+        } else if (id === 2) { // flail friction
+          this.player.weapon.flails.forEach(flail => {
+            flail.friction = Math.sqrt(flail.friction); // keeps getting closer to 1 with each upgrade
+          });
+        }
 
         const writer = new Writer();
         writer.vu(3);
@@ -138,7 +147,7 @@ export default class Client {
 
     if (this.player == null) return;
 
-    if (this.inputs.distance > 80) this.player.applyForce(this.inputs.angle, 0.4);
+    if (this.inputs.distance > 80) this.player.applyForce(this.inputs.angle + Math.PI, 0.4);
 
     this.player.tick(tick);
   }

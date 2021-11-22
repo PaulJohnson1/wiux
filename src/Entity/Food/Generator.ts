@@ -31,7 +31,7 @@ export default class Generator extends BaseEntity {
   onCollisionCallback(entity: BaseEntity) {
     if (entity === this) return;
 
-    const delta = entity.position.subtract(this.position);
+    const delta = this.position.subtract(entity.position);
     const dir = delta.dir;
 
     if (

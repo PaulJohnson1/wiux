@@ -12,6 +12,7 @@ export default class BaseEntity extends Entity {
   public name: string;
 
   public size: number;
+  public friction: number;
   public restLength: number;
   public resistance: number;
   public knockback: number;
@@ -30,8 +31,8 @@ export default class BaseEntity extends Entity {
     this.name = "";
 
     this.size = 0;
+    this.friction = 0.95;
     this.restLength = 0;
-
     this.knockback = 0.9;
     this.resistance = 0.9;
 
@@ -50,7 +51,7 @@ export default class BaseEntity extends Entity {
   }
 
   applyForce(theta: number, distance: number, polar = true) {
-    const addedVel = polar ? Vector.fromPolar(theta + Math.PI, distance) : new Vector(theta, distance);
+    const addedVel = polar ? Vector.fromPolar(theta, distance) : new Vector(theta, distance);
 
     this.velocity = this.velocity.add(addedVel)
   }
@@ -62,7 +63,7 @@ export default class BaseEntity extends Entity {
       if (entity.detectsCollision) this.onCollisionCallback(entity);
 
       if (!entity.collides || !this.collides) return;
-      const delta = entity.position.subtract(this.position);
+      const delta = this.position.subtract(entity.position);
       const deltaDir = delta.dir;
 
       this.applyForce(deltaDir, entity.knockback * this.resistance);
@@ -90,14 +91,14 @@ export default class BaseEntity extends Entity {
   tick(tick: number) {
     super.tick(tick);
 
-    this.velocity = this.velocity.scale(0.95);
+    this.velocity = this.velocity.scale(this.friction);
     this.position = this.position.add(this.velocity);
     this.collideWith(this.findCollisions());
 
     const mag = this.position.mag;
 
     if (mag + this.size > this.game.size) {
-      this.position = this.position.movePointByAngle(mag + this.size - this.game.size, this.position.dir + Math.PI);
+      this.applyForce(this.position.dir, -10);
     }
 
     if (this.isAffectedByWind) {
