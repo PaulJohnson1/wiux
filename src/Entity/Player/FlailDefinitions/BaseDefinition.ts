@@ -4,8 +4,8 @@ import Rope from "../Rope/Rope";
 
 export default class BaseDefinition {
   protected owner: Player;
-  protected flails: Flail[];
-  protected ropes: Rope[];
+  public flails: Flail[];
+  public ropes: Rope[];
 
   protected constructor(owner: Player) {
     this.owner = owner;

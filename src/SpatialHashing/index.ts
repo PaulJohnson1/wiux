@@ -23,9 +23,8 @@ export default class SpatialHashing {
   private native: RawSpatialHashing;
   private game: Game | null;
 
-  constructor(cellSize: number, game: Game | null = null) {
+  constructor(game: Game | null = null) {
     this.native = spatialHash;
-    this.native.setCellSize(cellSize);
 
     this.game = game;
   }
@@ -83,7 +82,7 @@ export const benchmark = (it: number) => {
 
   const asht = new Prng(136345);
 
-  const test = new SpatialHashing(8, null);
+  const test = new SpatialHashing(null);
 
   const start = Date.now();
 

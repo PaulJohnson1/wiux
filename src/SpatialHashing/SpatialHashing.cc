@@ -24,19 +24,17 @@ class SpatialHash
 {
 public:
     unordered_flat_map<int32_t, std::vector<Box>> cells;
-    int32_t cellSize;
 
-    SpatialHash(int32_t cellSize)
+    SpatialHash()
     {
-        this->cellSize = cellSize;
     }
 
     void getHashes(Box box, std::vector<int32_t> *out)
     {
-        int32_t const startX = (box.x - box.w) >> cellSize;
-        int32_t const startY = (box.y - box.h) >> cellSize;
-        int32_t const endX = (box.x + box.w) >> cellSize;
-        int32_t const endY = (box.y + box.h) >> cellSize;
+        int32_t const startX = (box.x - box.w) >> 6;
+        int32_t const startY = (box.y - box.h) >> 6;
+        int32_t const endX = (box.x + box.w) >> 6;
+        int32_t const endY = (box.y + box.h) >> 6;
 
         for (int32_t x = startX; x <= endX; x++)
         {
@@ -106,12 +104,7 @@ using v8::String;
 using v8::TypedArray;
 using v8::Value;
 
-SpatialHash spatialHash(20);
-
-void setCellSize(const FunctionCallbackInfo<Value> &rawArgs)
-{
-    spatialHash.cellSize = (int32_t)(rawArgs[0].As<Number>()->Value());
-}
+SpatialHash spatialHash;
 
 void insert(const FunctionCallbackInfo<Value> &rawArgs)
 {
@@ -160,7 +153,6 @@ void clear(const FunctionCallbackInfo<Value> &rawArgs)
 
 void Init(Local<Object> exports)
 {
-    NODE_SET_METHOD(exports, "setCellSize", setCellSize);
     NODE_SET_METHOD(exports, "insert", insert);
     NODE_SET_METHOD(exports, "query", query);
     NODE_SET_METHOD(exports, "clear", clear);

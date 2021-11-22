@@ -7,7 +7,7 @@ import Vector from "../../../Vector";
 import { Writer } from "../../../Coder";
 
 export default class Rope extends BaseEntity {
-  private k: number;
+  public k: number;
   public length: number;
   public segments: Set<BaseEntity>;
   public owner: BaseEntity;

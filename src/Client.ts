@@ -12,14 +12,16 @@ export default class Client {
   public game: Game;
   public player: Player | null;
   public view: Set<Entity>;
+  public stats: number[];
+  public playerSpeed: number;
 
   constructor(game: Game, socket: WebSocket) {
     this.game = game;
 
     this.game.server.clients.add(this);
-
     this.player = null;
-
+    this.stats = [0, 0, 0, 0, 0, 0]
+    this.playerSpeed = 0.4;
     this.view = new Set();
     this.inputs = { angle: 0, distance: 0, mousePressed: false };
     this.socket = socket;
@@ -36,11 +38,59 @@ export default class Client {
         this.inputs.distance = reader.vu();
       } else if (packetType === 1) {
         if (this.player != null) return;
+        
         const name = reader.string().substring(0, 50);
         this.player = new Player(this.game, name, this);
+        this.stats = [0, 0, 0, 0, 0, 0];
+        this.playerSpeed = 0.4;
+        this.updateStats();
         this.sendPlayerId();
+      } else if (packetType === 2) {
+        if (this.player == null) return;
+
+        const id = reader.vu();
+
+        if (this.stats[id] == null) return;
+
+        this.stats[id]++;
+
+        if (id === 0) { // flail knockback
+          this.player.weapon.flails.forEach(flail => {
+            flail.knockback += 0.1;
+          });
+        } else if (id === 1) { // flail resitance
+          this.player.weapon.flails.forEach(flail => {
+            flail.resistance *= 0.9;
+          });
+        } else if (id === 2) { // flail friction
+          this.player.weapon.flails.forEach(flail => {
+            flail.friction = Math.sqrt(flail.friction); // keeps getting closer to 1 with each upgrade
+          });
+        } else if (id === 3) { // rope's spring constant
+          this.player.weapon.ropes.forEach(rope => {
+            rope.k = Math.sqrt(rope.k);
+          });
+        } else if (id === 4) { // rope rest length
+          this.player.weapon.ropes.forEach(rope => {
+            rope.restLength += 10;
+          });
+        } else if (id === 5) { // player speed
+          this.playerSpeed *= 1.1;
+        }
+
+        this.updateStats();
       }
     });
+  }
+
+  updateStats() {
+    const writer = new Writer();
+    writer.vu(3);
+    this.stats.forEach(stat => writer.vu(stat));
+
+    writer.vu(this.stats.reduce((acc, stat) => acc + stat, 0));
+
+    this.socket.send(writer.write());
   }
 
   sendInit() {
@@ -113,7 +163,7 @@ export default class Client {
 
     if (this.player == null) return;
 
-    if (this.inputs.distance > 80) this.player.applyForce(this.inputs.angle, 0.4);
+    if (this.inputs.distance > 80) this.player.applyForce(this.inputs.angle + Math.PI, this.playerSpeed);
 
     this.player.tick(tick);
   }
