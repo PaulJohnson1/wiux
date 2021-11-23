@@ -57,7 +57,7 @@ export default class SpatialHashing {
       for (let i = 0; i < raw.length; i++) {
         foundEntities[i] = this.game._entities[raw[i]] as BaseEntity;
       }
-  
+
       return foundEntities.filter(v => !!(v && v.position));
     }
 
@@ -70,7 +70,7 @@ export const benchmark = (it: number) => {
 
   class Prng {
     private seed: number
-  
+
     constructor(seed: number) {
       this.seed = seed;
     }

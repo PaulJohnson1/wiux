@@ -30,7 +30,7 @@ export default class Game {
     this.size = 3000;
     this.windDirection = 0;
 
-    const generators = 4;
+    const generators = 18;
 
     for (let i = 0; i < generators; i++) {
       const pos = Vector.fromPolar(Math.random() * 6, Math.random() * this.size);
