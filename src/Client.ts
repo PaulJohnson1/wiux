@@ -5,6 +5,8 @@ import Entity from "./Entity/Entity";
 import Vector from "./Vector";
 import { Writer, Reader } from "./Coder";
 import { PlayerInputs } from "./types";
+import { Stat } from "./types";
+import { getBaseLog } from "./util";
 
 export default class Client {
   public socket: WebSocket;
@@ -12,7 +14,7 @@ export default class Client {
   public game: Game;
   public player: Player | null;
   public view: Set<Entity>;
-  public stats: number[];
+  public stats: Stat[];
   public playerSpeed: number;
 
   constructor(game: Game, socket: WebSocket) {
@@ -20,7 +22,32 @@ export default class Client {
 
     this.game.server.clients.add(this);
     this.player = null;
-    this.stats = [0, 0, 0, 0, 0, 0]
+    this.stats = [
+      {
+        value: 0,
+        max: 10
+      },
+      {
+        value: 0,
+        max: 10
+      },
+      {
+        value: 0,
+        max: 10
+      },
+      {
+        value: 0,
+        max: 10
+      },
+      {
+        value: 0,
+        max: 10
+      },
+      {
+        value: 0,
+        max: 10
+      }
+    ];
     this.playerSpeed = 0.4;
     this.view = new Set();
     this.inputs = { angle: 0, distance: 0, mousePressed: false };
@@ -41,7 +68,32 @@ export default class Client {
         
         const name = reader.string().substring(0, 50);
         this.player = new Player(this.game, name, this);
-        this.stats = [0, 0, 0, 0, 0, 0];
+        this.stats = [
+          {
+            value: 0,
+            max: 10
+          },
+          {
+            value: 0,
+            max: 10
+          },
+          {
+            value: 0,
+            max: 10
+          },
+          {
+            value: 0,
+            max: 10
+          },
+          {
+            value: 0,
+            max: 10
+          },
+          {
+            value: 0,
+            max: 10
+          }
+        ];
         this.playerSpeed = 0.4;
         this.updateStats();
         this.sendPlayerId();
@@ -52,11 +104,21 @@ export default class Client {
 
         if (this.stats[id] == null) return;
 
-        this.stats[id]++;
+        const stat = this.stats[id];
+
+        if (stat.value >= stat.max) return;
+
+        // https://www.desmos.com/calculator/7zrxbkgeqp graph of statsAvailable. y = stats, x = flail size
+        const statsAvailable = 1.5 * getBaseLog(this.player.weapon.flails[0].size / 23, 1.12);
+        const statsUsed = this.statsUsed;
+
+        if (statsUsed >= statsAvailable) return;
+        
+        stat.value++;
 
         if (id === 0) { // flail knockback
           this.player.weapon.flails.forEach(flail => {
-            flail.knockback += 0.1;
+            flail.knockback /= 0.9;
           });
         } else if (id === 1) { // flail resitance
           this.player.weapon.flails.forEach(flail => {
@@ -68,7 +130,7 @@ export default class Client {
           });
         } else if (id === 3) { // rope's spring constant
           this.player.weapon.ropes.forEach(rope => {
-            rope.k = Math.sqrt(rope.k);
+            rope.k += 0.05;
           });
         } else if (id === 4) { // rope rest length
           this.player.weapon.ropes.forEach(rope => {
@@ -83,12 +145,16 @@ export default class Client {
     });
   }
 
+  get statsUsed() {
+    return this.stats.reduce((acc, v) => acc + v.value, 0)
+  }
+
   updateStats() {
     const writer = new Writer();
     writer.vu(3);
-    this.stats.forEach(stat => writer.vu(stat));
+    this.stats.forEach(stat => writer.vu(stat.value));
 
-    writer.vu(this.stats.reduce((acc, stat) => acc + stat, 0));
+    writer.vu(this.statsUsed);
 
     this.socket.send(writer.write());
   }

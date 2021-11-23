@@ -3,3 +3,8 @@ export interface PlayerInputs {
   distance: number;
   mousePressed: boolean;
 };
+
+export interface Stat {
+  value: number;
+  max: number;
+};
