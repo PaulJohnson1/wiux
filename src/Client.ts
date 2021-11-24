@@ -25,6 +25,7 @@ export default class Client {
   public authenticated: boolean;
   private authKey: string;
   private wantedAuth: string;
+  private sentAuth: boolean;
 
   constructor(game: Game, shufflingPointer: number, socket: WebSocket) {
     this.game = game;
@@ -34,6 +35,7 @@ export default class Client {
     this.authenticated = false;
     this.authKey = crypto.randomBytes(100).toString("hex");
     this.wantedAuth = hash(this.authKey);
+    this.sentAuth = false;
 
     this.player = null;
     this.stats = [
@@ -159,6 +161,9 @@ export default class Client {
 
         this.updateStats();
       } else if (packetType === 3) {
+        if (this.sentAuth) return;
+
+        this.sentAuth = true;
         const recievedAuth = reader.string();
         if (recievedAuth !== this.wantedAuth) {
           console.log("auth fail");
@@ -167,6 +172,8 @@ export default class Client {
 
         console.log("successful auth");
         this.authenticated = true;
+
+        this.game.server.clients.add(this);
       }
     });
   }
