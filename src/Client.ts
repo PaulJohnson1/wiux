@@ -263,6 +263,11 @@ export default class Client {
   terminateSocket() {
     if (this.player != null) this.player.terminate();
 
+    if (!(
+      this.socket.readyState === WebSocket.CLOSED ||
+      this.socket.readyState === WebSocket.CLOSING
+    )) this.socket.close();
+
     this.game.server.clients.delete(this);
   }
 
