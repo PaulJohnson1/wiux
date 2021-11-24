@@ -1,3 +1,4 @@
+import crypto = require("crypto")
 import * as WebSocket from "ws";
 import Game from "./Game";
 import Player from "./Entity/Player/Player";
@@ -10,6 +11,8 @@ import { PlayerInputs } from "./types";
 import { Stat } from "./types";
 import { getBaseLog } from "./util";
 
+const hash = (str: string) => crypto.createHash("sha256").update(str).digest("hex");
+
 export default class Client {
   public socket: WebSocket;
   public inputs: PlayerInputs;
@@ -19,13 +22,21 @@ export default class Client {
   public stats: Stat[];
   public playerSpeed: number;
   public shufflingPointer: number;
+  public authenticated: boolean;
+  private authKey: string;
+  private wantedAuth: string;
+  private sentAuth: boolean;
 
   constructor(game: Game, shufflingPointer: number, socket: WebSocket) {
     this.game = game;
 
     this.shufflingPointer = shufflingPointer
 
-    this.game.server.clients.add(this);
+    this.authenticated = false;
+    this.authKey = crypto.randomBytes(100).toString("hex");
+    this.wantedAuth = hash(this.authKey);
+    this.sentAuth = false;
+
     this.player = null;
     this.stats = [
       {
@@ -60,6 +71,8 @@ export default class Client {
 
     this.sendInit();
 
+    this.requestAuth();
+
     this.socket.on("message", data => {
       const reader = new Reader(data as Buffer);
 
@@ -69,6 +82,7 @@ export default class Client {
         this.inputs.angle = reader.vi() / 64;
         this.inputs.distance = reader.vu();
       } else if (packetType === 1) {
+        if (!this.authenticated) return;
         if (this.player != null) return;
         
         const name = reader.string().substring(0, 50);
@@ -146,6 +160,20 @@ export default class Client {
         }
 
         this.updateStats();
+      } else if (packetType === 3) {
+        if (this.sentAuth) return;
+
+        this.sentAuth = true;
+        const recievedAuth = reader.string();
+        if (recievedAuth !== this.wantedAuth) {
+          console.log("auth fail");
+          return this.terminateSocket();
+        }
+
+        console.log("successful auth");
+        this.authenticated = true;
+
+        this.game.server.clients.add(this);
       }
     });
   }
@@ -159,6 +187,15 @@ export default class Client {
 
   get statsUsed() {
     return this.stats.reduce((acc, v) => acc + v.value, 0)
+  }
+
+  requestAuth() {
+    this.authenticated = false;
+    const writer = new Writer();
+    writer.vu(4);
+    writer.string(this.authKey);
+
+    this.socket.send(this.shuffle(writer.write()))
   }
 
   updateStats() {
@@ -232,6 +269,11 @@ export default class Client {
 
   terminateSocket() {
     if (this.player != null) this.player.terminate();
+
+    if (!(
+      this.socket.readyState === WebSocket.CLOSED ||
+      this.socket.readyState === WebSocket.CLOSING
+    )) this.socket.close();
 
     this.game.server.clients.delete(this);
   }
