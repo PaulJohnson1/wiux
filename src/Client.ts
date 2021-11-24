@@ -3,6 +3,8 @@ import Game from "./Game";
 import Player from "./Entity/Player/Player";
 import Entity from "./Entity/Entity";
 import Vector from "./Vector";
+/** @ts-ignore */
+import Shuffler from "./Shuffler/Shuffle";
 import { Writer, Reader } from "./Coder";
 import { PlayerInputs } from "./types";
 import { Stat } from "./types";
@@ -16,9 +18,12 @@ export default class Client {
   public view: Set<Entity>;
   public stats: Stat[];
   public playerSpeed: number;
+  public shufflingPointer: number;
 
-  constructor(game: Game, socket: WebSocket) {
+  constructor(game: Game, shufflingPointer: number, socket: WebSocket) {
     this.game = game;
+
+    this.shufflingPointer = shufflingPointer
 
     this.game.server.clients.add(this);
     this.player = null;
@@ -145,6 +150,13 @@ export default class Client {
     });
   }
 
+  get shuffle() {
+    return (packet: ArrayBuffer) => {
+      /** @ts-ignore */
+      return Shuffler.prototype.getRandom.call(this, packet);
+    }
+  }
+
   get statsUsed() {
     return this.stats.reduce((acc, v) => acc + v.value, 0)
   }
@@ -156,7 +168,7 @@ export default class Client {
 
     writer.vu(this.statsUsed);
 
-    this.socket.send(writer.write());
+    this.socket.send(this.shuffle(writer.write()));
   }
 
   sendInit() {
@@ -165,7 +177,7 @@ export default class Client {
 
     writer.vu(this.game.size);
 
-    this.socket.send(writer.write());
+    this.socket.send(this.shuffle(writer.write()));
   }
 
   sendPlayerId() {
@@ -176,7 +188,7 @@ export default class Client {
 
     writer.vu(this.player.id);
 
-    this.socket.send(writer.write());
+    this.socket.send(this.shuffle(writer.write()));
   }
 
   sendUpdate() {
@@ -215,7 +227,7 @@ export default class Client {
 
     writer.vu(0);
 
-    this.socket.send(writer.write());
+    this.socket.send(this.shuffle(writer.write()));
   }
 
   terminateSocket() {

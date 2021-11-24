@@ -4,6 +4,7 @@ import BaseEntity from "./Entity/BaseEntity";
 import Generator from "./Entity/Food/Generator";
 import GameSpatialHashing from "./SpatialHashing";
 import Vector from "./Vector";
+import * as fs from "fs";
 
 export default class Game {
   public server: Server;
@@ -16,6 +17,9 @@ export default class Game {
   public size: number;
   public windDirection: number;
   public spatialHashing: GameSpatialHashing;
+  public memory: WebAssembly.Memory;
+  public wasm: any; // whatever WebAssembly.instantiate returns
+  public HEAPU8: Uint8Array;
 
   constructor(server: Server) {
     this.server = server;
@@ -26,6 +30,22 @@ export default class Game {
     this.spatialHashing = new GameSpatialHashing(this);
     this.entities = new Set();
     this._entities = {};
+
+    this.memory = new WebAssembly.Memory({
+      initial: 1024,
+      maximum: 1024
+    });
+
+    this.HEAPU8 = new Uint8Array(this.memory.buffer)
+
+    this.wasm = null
+
+    WebAssembly.instantiate(
+      fs.readFileSync(__dirname + "/../src/Shuffler/shuffle.wasm"),
+      {
+        a: { memory: this.memory },
+      }
+    ).then((wasm) => (this.wasm = wasm));
 
     this.size = 3000;
     this.windDirection = 0;

@@ -1,3 +1,5 @@
+.env
+src/Shuffler/shuffle.wat
 .upm/
 dist/
 build/
