@@ -22,6 +22,8 @@ export default class Generator extends BaseEntity {
     this.size = 50;
     this.knockback = 5;
     this.resistance = 0;
+    this.style = 0
+    this.color = 100;
 
     this.collides = true;
     this.detectsCollision = true;
@@ -56,7 +58,7 @@ export default class Generator extends BaseEntity {
       writer.vu(1)
       writer.string(this.name);
       writer.vu(0);
-      writer.vu(0x00FF00 | 33554432);
+      writer.vu(this.color);
     }
 
     writer.vi(this.position.x);
