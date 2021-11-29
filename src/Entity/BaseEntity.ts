@@ -1,6 +1,7 @@
 import Game from "../Game";
 import Vector from "../Vector";
 import Entity from "./Entity";
+import { Writer } from "../Coder";
 
 /**
  * An entity that is visible and has physics
@@ -16,11 +17,14 @@ export default class BaseEntity extends Entity {
   public restLength: number;
   public resistance: number;
   public knockback: number;
+  public color: number;
+  public style: number;
 
   public collides: boolean;
   public detectsCollision: boolean;
   public isAffectedByRope: boolean;
   public isAffectedByWind: boolean;
+  public onMinimap: boolean;
 
   constructor(game: Game) {
     super(game);
@@ -30,6 +34,8 @@ export default class BaseEntity extends Entity {
 
     this.name = "";
 
+    this.color = 0;
+    this.style = 0;
     this.size = 0;
     this.friction = 0.95;
     this.restLength = 0;
@@ -40,6 +46,7 @@ export default class BaseEntity extends Entity {
     this.detectsCollision = false;
     this.isAffectedByRope = false;
     this.isAffectedByWind = false;
+    this.onMinimap = false;
   }
 
   get area() {
@@ -54,6 +61,19 @@ export default class BaseEntity extends Entity {
     const addedVel = polar ? Vector.fromPolar(theta, distance) : new Vector(theta, distance);
 
     this.velocity = this.velocity.add(addedVel)
+  }
+
+  writeBinary(writer: Writer, isCreation: boolean) {
+    if (isCreation) {
+      writer.vu(1); 
+      writer.string(this.name);
+      writer.vu(this.style);
+      writer.vu(this.color);
+    }
+    
+    writer.vi(this.position.x);
+    writer.vi(this.position.y);
+    writer.vu(this.size);
   }
 
   onCollisionCallback(entity: BaseEntity) {}

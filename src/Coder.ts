@@ -14,26 +14,24 @@ const endianSwap = (val: number) =>
 
 export class Writer {
   private length: number;
-  private buffer: Uint8Array;
 
   constructor() {
     this.length = 0
-    this.buffer = buffer;
   }
   i8(num: number) {
-    this.buffer[this.length] = num
+    buffer[this.length] = num
     this.length += 1
     return this
   }
   i32(num: number) {
     i32[0] = num
-    this.buffer.set(u8, this.length)
+    buffer.set(u8, this.length)
     this.length += 4
     return this
   }
   float(num: number) {
     float[0] = num
-    this.buffer.set(u8, this.length)
+    buffer.set(u8, this.length)
     this.length += 4
     return this
   }
@@ -42,7 +40,7 @@ export class Writer {
       let part = num
       num >>>= 7
       if (num) part |= 0x80
-      this.buffer[this.length++] = part
+      buffer[this.length++] = part
     } while (num)
     return this
   }
@@ -60,16 +58,16 @@ export class Writer {
   }
   string(str: string) {
     const bytes = new Uint8Array(Buffer.from(str))
-    this.buffer.set(bytes, this.length)
+    buffer.set(bytes, this.length)
     this.length += bytes.length
-    this.buffer[this.length++] = 0
+    buffer[this.length++] = 0
     return this
   }
   write() {
-    return this.buffer.buffer.slice(0, this.length)
+    return buffer.buffer.slice(0, this.length)
   }
   dump() {
-    return Array.from(this.buffer.subarray(0, this.length)).map(r => r.toString(16).padStart(2, "0")).join(' ')
+    return Array.from(buffer.subarray(0, this.length)).map(r => r.toString(16).padStart(2, "0")).join(' ')
   }
 }
 export class Reader {

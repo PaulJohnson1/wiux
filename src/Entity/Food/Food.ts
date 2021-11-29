@@ -9,7 +9,6 @@ export default class Food extends BaseEntity {
 
     this.area = area;
     this.detectsCollision = true;
-
     this.isAffectedByWind = true;
   }
 
