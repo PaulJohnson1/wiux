@@ -31,7 +31,7 @@ export default class Player extends BaseEntity {
     this.weapon = new BasicFlail(this);
 
 
-    this.color = Math.random() * 0xFF;
+    this.color = Math.random() * 360;
   }
 
   terminate() {

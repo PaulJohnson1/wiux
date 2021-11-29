@@ -10,6 +10,7 @@ export default class Food extends BaseEntity {
     this.area = area;
     this.detectsCollision = true;
     this.isAffectedByWind = true;
+    this.color = Math.random() * 360;
   }
 
   onCollisionCallback(entity: BaseEntity) {
@@ -17,18 +18,5 @@ export default class Food extends BaseEntity {
 
     entity.area += this.area;
     super.terminate();
-  }
-
-  writeBinary(writer: Writer, isCreation: boolean) {
-    if (isCreation) {
-      writer.vu(1);
-      writer.string(this.name);
-      writer.vu(0);
-      writer.vu((Math.random() * 0xFFFFFF) | 33554432);
-    }
-
-    writer.vi(this.position.x);
-    writer.vi(this.position.y);
-    writer.vu(this.size);
   }
 }
