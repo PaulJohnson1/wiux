@@ -22,22 +22,14 @@ export default class Flail extends BaseEntity {
     this.rope = null;
 
     this.size = 50;
+    this.style = 1;
+
     this.isAffectedByRope = true;
     this.collides = true;
     this.detectsCollision = true;
-  }
+    this.onMinimap = true;
 
-  writeBinary(writer: Writer, isCreation: boolean) {
-    if (isCreation) {
-      writer.vu(1);
-      writer.string(this.name);
-      writer.vu(1);
-      writer.vu(this.owner.color);
-    }
-
-    writer.vi(this.position.x);
-    writer.vi(this.position.y);
-    writer.vu(this.size);
+    this.color = this.owner.color;
   }
 
   terminate() {

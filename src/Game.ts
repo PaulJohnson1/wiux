@@ -4,6 +4,7 @@ import BaseEntity from "./Entity/BaseEntity";
 import Generator from "./Entity/Food/Generator";
 import GameSpatialHashing from "./SpatialHashing";
 import Vector from "./Vector";
+import { Writer } from "./Coder";
 import * as fs from "fs";
 
 export default class Game {
@@ -78,5 +79,29 @@ export default class Game {
     });
 
     this.entities.forEach(entity => entity.tick(tick));
+  
+    if (tick % 10 === 0) {
+      const writer = new Writer();
+
+      writer.vu(5);
+
+      this.entities.forEach(entity => {
+        if (!(entity instanceof BaseEntity) || !entity.onMinimap) return;
+
+        // % across the x and y axis
+        writer.vi(-entity.position.x / this.size * 127);
+        writer.vi(-entity.position.y / this.size * 127);
+        writer.vu(entity.color);
+        writer.vu(entity.size);      
+      });
+
+      writer.vi(1234);
+
+      const encodedMinimap = writer.write();
+
+      this.server.clients.forEach(client => {
+        client.sendPacket(encodedMinimap);
+      });
+    }
   }
 }

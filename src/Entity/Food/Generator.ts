@@ -19,13 +19,13 @@ export default class Generator extends BaseEntity {
 
     this.lastHitTick = 0;
     this.hitCooldown = 10;
-
+    this.size = 50;
     this.knockback = 5;
     this.resistance = 0;
 
     this.collides = true;
     this.detectsCollision = true;
-    this.size = 50;
+    this.onMinimap = true;
   }
 
   onCollisionCallback(entity: BaseEntity) {

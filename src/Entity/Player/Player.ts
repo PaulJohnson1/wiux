@@ -20,15 +20,18 @@ export default class Player extends BaseEntity {
     this.client = client;
 
     this.size = 10;
+    this.style = 2;
+
     this.collides = true;
     this.detectsCollision = true;
+    this.onMinimap = true;
 
     this.restLength = this.size;
 
     this.weapon = new BasicFlail(this);
 
 
-    this.color = (Math.random() * 0xFFFFFF) | 33554432;
+    this.color = Math.random() * 0xFF;
   }
 
   terminate() {
@@ -42,18 +45,5 @@ export default class Player extends BaseEntity {
     if (entity instanceof Flail && entity.owner !== this) {
       this.terminate();
     }
-  }
-
-  writeBinary(writer: Writer, isCreation: boolean) {
-    if (isCreation) {
-      writer.vu(1);
-      writer.string(this.name);
-      writer.vu(2);
-      writer.vu(this.color);
-    }
-    
-    writer.vi(this.position.x);
-    writer.vi(this.position.y);
-    writer.vu(this.size);
   }
 }

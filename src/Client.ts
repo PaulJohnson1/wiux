@@ -195,7 +195,7 @@ export default class Client {
     writer.vu(4);
     writer.string(this.authKey);
 
-    this.socket.send(this.shuffle(writer.write()))
+    this.sendPacket(writer.write())
   }
 
   updateStats() {
@@ -205,7 +205,7 @@ export default class Client {
 
     writer.vu(this.statsUsed);
 
-    this.socket.send(this.shuffle(writer.write()));
+    this.sendPacket(writer.write())
   }
 
   sendInit() {
@@ -214,7 +214,7 @@ export default class Client {
 
     writer.vu(this.game.size);
 
-    this.socket.send(this.shuffle(writer.write()));
+    this.sendPacket(writer.write())
   }
 
   sendPlayerId() {
@@ -225,7 +225,7 @@ export default class Client {
 
     writer.vu(this.player.id);
 
-    this.socket.send(this.shuffle(writer.write()));
+    this.sendPacket(writer.write())
   }
 
   sendUpdate() {
@@ -264,7 +264,11 @@ export default class Client {
 
     writer.vu(0);
 
-    this.socket.send(this.shuffle(writer.write()));
+    this.sendPacket(writer.write())
+  }
+
+  sendPacket(packet: ArrayBufferLike) {
+    this.socket.send(this.shuffle(new Uint8Array(packet)));
   }
 
   terminateSocket() {
