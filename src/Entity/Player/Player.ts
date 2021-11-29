@@ -21,6 +21,7 @@ export default class Player extends BaseEntity {
 
     this.size = 10;
     this.style = 2;
+    this.color = Math.random() * 360;
 
     this.collides = true;
     this.detectsCollision = true;
@@ -29,9 +30,6 @@ export default class Player extends BaseEntity {
     this.restLength = this.size;
 
     this.weapon = new BasicFlail(this);
-
-
-    this.color = Math.random() * 360;
   }
 
   terminate() {
