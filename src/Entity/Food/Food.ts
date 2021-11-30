@@ -11,6 +11,8 @@ export default class Food extends BaseEntity {
     this.collides = true;
     this.detectsCollision = true;
     this.isAffectedByWind = true;
+    this.onMinimap = true;
+    
     this.color = Math.random() * 360;
   }
 

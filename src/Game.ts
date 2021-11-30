@@ -80,13 +80,14 @@ export default class Game {
 
     this.entities.forEach(entity => entity.tick(tick));
   
-    if (tick % 10 === 0) {
+    if (tick % 5 === 0) {
       const writer = new Writer();
 
       writer.vu(5);
 
       this.entities.forEach(entity => {
         if (!(entity instanceof BaseEntity) || !entity.onMinimap) return;
+        if (entity.size < 50) return;
 
         // % across the x and y axis
         writer.vi(-entity.position.x / this.size * 127);
