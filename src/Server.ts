@@ -19,7 +19,7 @@ export default class Server {
 
     this.server.on("connection", ws => {
       console.log("new player");
-      this.shufflingPointer -= 400;
+      this.shufflingPointer -= 4;
       const client = new Client(this.game, this.shufflingPointer, ws);
       /** @ts-ignore */
       ws.client = client;
