@@ -61,7 +61,7 @@ export default class Game {
   }
 
   tick(tick: number) {
-    this.windDirection += Math.random() * 0.05 - 0.0225;
+    this.windDirection += Math.random() * 0.05 - 0.04;
 
     this.spatialHashing.clear();
 

@@ -111,9 +111,10 @@ export default class BaseEntity extends Entity {
   tick(tick: number) {
     super.tick(tick);
 
+    this.collideWith(this.findCollisions());
+
     this.velocity = this.velocity.scale(this.friction);
     this.position = this.position.add(this.velocity);
-    this.collideWith(this.findCollisions());
 
     const mag = this.position.mag;
 

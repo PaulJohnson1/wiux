@@ -235,7 +235,7 @@ export default class Client {
 
     /** @ts-ignore */
     const entitiesInView = new Set(this.game.spatialHashing.query({
-      position: this.player ? this.player.position : new Vector(0, 0),
+      position: this.player != null ? this.player.position : new Vector(0, 0),
       size: 1100,
     })) as Set<Entity>;
 

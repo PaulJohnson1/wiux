@@ -31,10 +31,10 @@ public:
 
     void getHashes(Box box, std::vector<int32_t> *out)
     {
-        int32_t const startX = (box.x - box.w) >> 6;
-        int32_t const startY = (box.y - box.h) >> 6;
-        int32_t const endX = (box.x + box.w) >> 6;
-        int32_t const endY = (box.y + box.h) >> 6;
+        int32_t const startX = (box.x - box.w) >> 7;
+        int32_t const startY = (box.y - box.h) >> 7;
+        int32_t const endX = (box.x + box.w) >> 7;
+        int32_t const endY = (box.y + box.h) >> 7;
 
         for (int32_t x = startX; x <= endX; x++)
         {
