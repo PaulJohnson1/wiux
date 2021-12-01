@@ -48,7 +48,7 @@ export default class Game {
       }
     ).then((wasm) => (this.wasm = wasm));
 
-    this.size = 3000;
+    this.size = 10000;
     this.windDirection = 0;
 
     const generators = 18;

@@ -55,10 +55,14 @@ export default class SpatialHashing {
       const foundEntities: BaseEntity[] = [];
 
       for (let i = 0; i < raw.length; i++) {
-        foundEntities[i] = this.game._entities[raw[i]] as BaseEntity;
+        foundEntities.push(this.game._entities[raw[i]] as BaseEntity);
+      
+        if (!this.game._entities[raw[i]]) {
+          throw new Error(`Unexpected collision on entity ${raw[i]}`);
+        }
       }
 
-      return foundEntities.filter(v => !!(v && v.position));
+      return foundEntities;
     }
 
     return raw;

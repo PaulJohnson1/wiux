@@ -19,7 +19,7 @@ export default class Generator extends BaseEntity {
 
     this.lastHitTick = 0;
     this.hitCooldown = 10;
-    this.size = 50;
+    this.size = 200;
     this.knockback = 5;
     this.resistance = 0;
     this.style = 0
