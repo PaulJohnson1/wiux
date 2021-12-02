@@ -71,7 +71,7 @@ public:
         {
             int32_t key = keys.at(i);
 
-            std::vector<Box> cell = cells[key];
+            std::vector<Box>& cell = cells[key];
             int32_t length = cell.size();
 
             for (int32_t j = 0; j < length; j++)
