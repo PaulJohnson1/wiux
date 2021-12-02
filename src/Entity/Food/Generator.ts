@@ -48,7 +48,7 @@ export default class Generator extends BaseEntity {
       for (let i = 0; i < foodCount; i++) {
         const food = new Food(this.game, Math.random() < 0.9 ? 200 : 1000);
         food.position = this.position;
-        food.applyForce(dir + Math.random() * 0.3 - 0.15, Math.random() * 30);
+        food.applyAcceleration(dir + Math.random() * 0.3 - 0.15, Math.random() * 30);
       }
     }
   }

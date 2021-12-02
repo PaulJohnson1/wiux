@@ -29,6 +29,7 @@ export default class Game {
     this.tickCount = 0;
 
     this.spatialHashing = new GameSpatialHashing(this);
+
     this.entities = new Set();
     this._entities = {};
 
@@ -79,7 +80,7 @@ export default class Game {
     });
 
     this.entities.forEach(entity => entity.tick(tick));
-  
+
     if (tick % 5 === 0) {
       const writer = new Writer();
 

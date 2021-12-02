@@ -76,11 +76,11 @@ export default class Rope extends BaseEntity {
       
       let force = delta.unitVector.scale(-this.k * x);
       
-      if (a.isAffectedByRope) a.applyForce(force.x, force.y, false);
+      if (a.isAffectedByRope) a.applyAcceleration(force.x, force.y, false);
       
       force = force.scale(-1);
 
-      if (b.isAffectedByRope) b.applyForce(force.x, force.y, false);
+      if (b.isAffectedByRope) b.applyAcceleration(force.x, force.y, false);
     }
   }
 }

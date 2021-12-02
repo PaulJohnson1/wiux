@@ -57,10 +57,10 @@ export default class BaseEntity extends Entity {
     this.size = Math.sqrt(v / Math.PI)
   }
 
-  applyForce(theta: number, distance: number, polar = true) {
+  applyAcceleration(theta: number, distance: number, polar = true) {
     const addedVel = polar ? Vector.fromPolar(theta, distance) : new Vector(theta, distance);
 
-    this.velocity = this.velocity.add(addedVel)
+    this.velocity = this.velocity.add(addedVel);
   }
 
   writeBinary(writer: Writer, isCreation: boolean) {
@@ -86,8 +86,8 @@ export default class BaseEntity extends Entity {
       const delta = this.position.subtract(entity.position);
       const deltaDir = delta.dir;
 
-      this.applyForce(deltaDir, entity.knockback * this.resistance);
-      entity.applyForce(deltaDir + Math.PI, this.knockback * entity.resistance);
+      this.applyAcceleration(deltaDir, entity.knockback * this.resistance);
+      entity.applyAcceleration(deltaDir + Math.PI, this.knockback * entity.resistance);
     });
   }
 
@@ -119,7 +119,7 @@ export default class BaseEntity extends Entity {
     const mag = this.position.mag;
 
     if (mag + this.size > this.game.size) {
-      this.applyForce(this.position.dir, -10);
+      this.applyAcceleration(this.position.dir, -10);
     }
 
     if (this.isAffectedByWind) {

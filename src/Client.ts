@@ -64,7 +64,7 @@ export default class Client {
         max: 10
       }
     ];
-    this.playerSpeed = 0.4;
+    this.playerSpeed = 120;
     this.view = new Set();
     this.inputs = { angle: 0, distance: 0, mousePressed: false };
     this.socket = socket;
@@ -287,7 +287,7 @@ export default class Client {
 
     if (this.player == null) return;
 
-    if (this.inputs.distance > 80) this.player.applyForce(this.inputs.angle + Math.PI, this.playerSpeed);
+    if (this.inputs.distance > 80) this.player.applyAcceleration(this.inputs.angle + Math.PI, this.playerSpeed);
 
     this.player.tick(tick);
   }
