@@ -99,10 +99,9 @@ export default class BaseEntity extends Entity {
     /** @ts-ignore */
     this.game.spatialHashing.query(this).forEach((entity: BaseEntity) => {
       const delta = entity.position.subtract(this.position);
-      const distance = delta.mag;
       const collisionDistance = entity.size + this.size;
 
-      if (distance < collisionDistance) ret.add(entity);
+      if (delta.x ** 2 + delta.y ** 2 < collisionDistance ** 2) ret.add(entity);
     });
 
     return ret;
