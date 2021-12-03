@@ -81,7 +81,7 @@ export default class Game {
 
     this.entities.forEach(entity => entity.tick(tick));
 
-    if (tick % 5 === 0) {
+    if (tick % 60 === 0) {
       const writer = new Writer();
 
       writer.vu(5);

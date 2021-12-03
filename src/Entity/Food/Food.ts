@@ -20,7 +20,7 @@ export default class Food extends BaseEntity {
     if (entity === this) return;
 
     if (entity instanceof Food) {
-      if (this.size + entity.size > 100) return;
+      if (this.size + entity.size > 200) return;
 
       if (this.size > entity.size) {
         entity.terminate();
