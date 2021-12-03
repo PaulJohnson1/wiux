@@ -113,7 +113,7 @@ export default class Client {
             max: 10
           }
         ];
-        this.playerSpeed = 0.4;
+        this.playerSpeed = 1;
         this.updateStats();
         this.sendPlayerId();
       } else if (packetType === 2) {

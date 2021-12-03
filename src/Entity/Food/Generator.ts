@@ -43,7 +43,7 @@ export default class Generator extends BaseEntity {
       this.animationSizeAddon = 10;
       this.lastHitTick = this.game.tickCount;
 
-      const foodCount = Math.sqrt(entity.velocity.mag);
+      const foodCount = entity.velocity.mag;
 
       for (let i = 0; i < foodCount; i++) {
         const food = new Food(this.game, Math.random() < 0.9 ? 200 : 1000);

@@ -4,7 +4,6 @@ import Player from "./Player";
 import Food from "../Food/Food";
 import Rope from "./Rope/Rope";
 import Vector from "../../Vector";
-import { Writer } from "../../Coder";
 
 /**
  * Child of a player
@@ -30,6 +29,12 @@ export default class Flail extends BaseEntity {
     this.onMinimap = true;
 
     this.color = this.owner.color;
+  }
+
+  applyAcceleration(theta: number, distance: number, polar = true) {
+    const addedVel = polar ? Vector.fromPolar(theta, distance) : new Vector(theta, distance);
+
+    this.velocity = this.velocity.add(addedVel.scale(1)); // eventually replace this 1 with some expression that will make the bigger flails a lot slower than the small one but not make them unmovable
   }
 
   terminate() {
