@@ -4,6 +4,7 @@ import Flail from "../Player/Flail";
 import Player from "../Player/Player"
 import Game from "../../Game";
 import { Writer } from "../../Coder";
+import { getBaseLog } from "../../util";
 
 export default class Generator extends BaseEntity {
   private lastHitTick: number;
@@ -43,7 +44,7 @@ export default class Generator extends BaseEntity {
       this.animationSizeAddon = 10;
       this.lastHitTick = this.game.tickCount;
 
-      const foodCount = entity.velocity.mag;
+      const foodCount = getBaseLog(entity.velocity.mag, 10);
 
       for (let i = 0; i < foodCount; i++) {
         const food = new Food(this.game, Math.random() < 0.9 ? 200 : 1000);

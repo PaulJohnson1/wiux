@@ -64,7 +64,7 @@ export default class Client {
         max: 10
       }
     ];
-    this.playerSpeed = 120;
+    this.playerSpeed = 0;
     this.view = new Set();
     this.inputs = { angle: 0, distance: 0, mousePressed: false };
     this.socket = socket;
@@ -113,7 +113,7 @@ export default class Client {
             max: 10
           }
         ];
-        this.playerSpeed = 1;
+        this.playerSpeed = 0.4;
         this.updateStats();
         this.sendPlayerId();
       } else if (packetType === 2) {
@@ -156,7 +156,7 @@ export default class Client {
             rope.restLength += 10;
           });
         } else if (id === 5) { // player speed
-          this.playerSpeed *= 1.1;
+          this.playerSpeed += 0.05;
         }
 
         this.updateStats();
