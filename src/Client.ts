@@ -1,4 +1,4 @@
-import crypto = require("crypto")
+import crypto = require("crypto");
 import * as WebSocket from "ws";
 import Game from "./Game";
 import Player from "./Entity/Player/Player";
