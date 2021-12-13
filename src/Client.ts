@@ -4,7 +4,6 @@ import Game from "./Game";
 import Player from "./Entity/Player/Player";
 import Entity from "./Entity/Entity";
 import Vector from "./Vector";
-/** @ts-ignore */
 import Shuffler from "./Shuffler/Shuffle";
 import { Writer, Reader } from "./Coder";
 import { PlayerInputs } from "./types";
