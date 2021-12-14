@@ -5,6 +5,7 @@ import Player from "./Entity/Player/Player";
 import Entity from "./Entity/Entity";
 import Vector from "./Vector";
 import Shuffler from "./Shuffler/Shuffle";
+import BaseEntity from "./Entity/BaseEntity";
 import { Writer, Reader } from "./Coder";
 import { PlayerInputs } from "./types";
 import { Stat } from "./types";
@@ -17,7 +18,7 @@ export default class Client {
   public inputs: PlayerInputs;
   public game: Game;
   public player: Player | null;
-  public view: Set<Entity>;
+  public view: Set<BaseEntity>;
   public stats: Stat[];
   public playerSpeed: number;
   public shufflingPointer: number;
@@ -179,7 +180,6 @@ export default class Client {
 
   get shuffle() {
     return (packet: ArrayBuffer) => {
-      /** @ts-ignore */
       return Shuffler.prototype.getRandom.call(this, packet);
     }
   }
@@ -232,13 +232,13 @@ export default class Client {
 
     writer.vu(0);
 
-    /** @ts-ignore */
+    /** @ts-ignore since the constructor for this.game.spatialHashing has a game param, it will return Set<BaseEntity> */
     const entitiesInView = new Set(this.game.spatialHashing.query({
       position: this.player != null ? this.player.position : new Vector(0, 0),
       size: 1100,
-    })) as Set<Entity>;
+    })) as Set<BaseEntity>;
 
-    this.view.forEach((entity: Entity) => {
+    this.view.forEach((entity) => {
       if (!entity.sentToClient) return;
 
       if (!entitiesInView.has(entity)) {
@@ -249,7 +249,7 @@ export default class Client {
 
     writer.vu(0);
 
-    entitiesInView.forEach((entity: Entity) => {
+    entitiesInView.forEach((entity) => {
       if (!entity.sentToClient) return;
 
       const isCreation = !this.view.has(entity);
