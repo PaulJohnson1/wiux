@@ -8,6 +8,9 @@ export default class Food extends BaseEntity {
     super(game);
 
     this.area = area;
+
+    this.knockback = 0.1;
+
     this.collides = true;
     this.detectsCollision = true;
     this.isAffectedByWind = true;
