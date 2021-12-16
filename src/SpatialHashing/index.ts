@@ -47,7 +47,7 @@ export default class SpatialHashing {
     const raw = this.native.query(
       entity.position.x,
       entity.position.y,
-      entity.size,
+      entity.size,  
       entity.size
     );
 
@@ -98,7 +98,6 @@ export const benchmark = (it: number) => {
   const end = Date.now();
 
   times.push(end - start);
-
 
   const start2 = Date.now();
 
