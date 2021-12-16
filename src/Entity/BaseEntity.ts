@@ -115,10 +115,10 @@ export default class BaseEntity extends Entity {
     this.velocity = this.velocity.scale(this.friction);
     this.position = this.position.add(this.velocity);
 
-    const mag = this.position.mag;
+    const mag = this.position.x ** 2 + this.position.y ** 2;
 
-    if (mag + this.size > this.game.size) {
-      this.applyAcceleration(this.position.dir, -10);
+    if (mag > (this.game.size - this.size) ** 2) {
+      this.applyAcceleration(this.position.dir, -Math.sqrt(mag - (this.game.size - this.size) ** 2) / 100);
     }
 
     if (this.isAffectedByWind) {
