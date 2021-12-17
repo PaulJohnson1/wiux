@@ -145,7 +145,7 @@ export default class Client {
           });
         } else if (id === 2) { // flail friction
           this.player.weapon.flails.forEach(flail => {
-            flail.friction = Math.sqrt(flail.friction); // keeps getting closer to 1 with each upgrade
+            flail.friction **= 0.9; // keeps getting closer to 1 with each upgrade
           });
         } else if (id === 3) { // rope's spring constant
           this.player.weapon.ropes.forEach(rope => {
