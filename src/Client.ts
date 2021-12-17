@@ -180,7 +180,7 @@ export default class Client {
 
   get shuffle() {
     return (packet: ArrayBuffer) => {
-      return Shuffler.prototype.getRandom.call(this, packet);
+      return packet
     }
   }
 
