@@ -113,7 +113,7 @@ export default class Client {
             max: 10
           }
         ];
-        this.playerSpeed = 0.4;
+        this.playerSpeed = 0.004;
         this.updateStats();
         this.sendPlayerId();
       } else if (packetType === 2) {
@@ -237,6 +237,8 @@ export default class Client {
       position: this.player != null ? this.player.position : new Vector(0, 0),
       size: 1100,
     })) as Set<BaseEntity>;
+
+    if (this.player != null) entitiesInView.add(this.player);
 
     this.view.forEach((entity) => {
       if (!entity.sentToClient) return;
