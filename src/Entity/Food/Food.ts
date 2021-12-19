@@ -14,7 +14,7 @@ export default class Food extends BaseEntity {
     this.collides = true;
     this.detectsCollision = true;
     this.isAffectedByWind = true;
-    this.onMinimap = true;
+    this.onMinimap = false;
     
     this.color = Math.random() * 360;
   }
@@ -27,10 +27,10 @@ export default class Food extends BaseEntity {
 
       if (this.size > entity.size) {
         entity.terminate();
-        this.area += entity.area * 0.7;
+        this.area += entity.area;
       } else {
         this.terminate();
-        entity.area += this.area * 0.7;
+        entity.area += this.area;
       }
     }
 
