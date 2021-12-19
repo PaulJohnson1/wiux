@@ -7,6 +7,8 @@ export default class Server {
   public game: Game;
   public clients: Set<Client>;
   public shufflingPointer: number
+  public ticksPerSecond: number;
+  public deltaTick: number;
 
   constructor(server: WebSocket.Server) {
     this.server = server;
@@ -14,6 +16,8 @@ export default class Server {
     this.clients = new Set();
     this.game = new Game(this);
     this.shufflingPointer = 16777216;
+    this.ticksPerSecond = 20;
+    this.deltaTick = 1000 / this.ticksPerSecond;
 
     (process as any).game = this;
 
@@ -31,7 +35,7 @@ export default class Server {
 
     setInterval(() => {
       this.tick();
-    }, 16);
+    }, 1000 / this.ticksPerSecond);
   }
 
   tick() {

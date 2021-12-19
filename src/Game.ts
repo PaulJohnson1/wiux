@@ -49,7 +49,7 @@ export default class Game {
       }
     ).then((wasm) => (this.wasm = wasm));
 
-    this.size = 30000;
+    this.size = 15000;
     this.windDirection = 0;
 
     const generators = 18;
@@ -81,7 +81,7 @@ export default class Game {
 
     this.entities.forEach(entity => entity.tick(tick));
 
-    if (tick % 60 === 0) {
+    if (tick % this.server.ticksPerSecond === 0) {
       const writer = new Writer();
 
       writer.vu(5);
