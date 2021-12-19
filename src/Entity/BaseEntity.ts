@@ -37,10 +37,10 @@ export default class BaseEntity extends Entity {
     this.color = 0;
     this.style = 0;
     this.size = 0;
-    this.friction = 0.95;
+    this.friction = 0.85;
     this.restLength = 0;
-    this.knockback = 0.9;
-    this.resistance = 0.9;
+    this.knockback = 0.1;
+    this.resistance = 1;
 
     this.collides = false;
     this.detectsCollision = false;
