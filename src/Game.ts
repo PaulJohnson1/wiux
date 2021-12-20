@@ -16,7 +16,6 @@ export default class Game {
   public tickCount: number;
   public nextId: number;
   public size: number;
-  public windDirection: number;
   public spatialHashing: GameSpatialHashing;
   public memory: WebAssembly.Memory;
   public wasm: any; // whatever WebAssembly.instantiate returns
@@ -50,7 +49,6 @@ export default class Game {
     ).then((wasm) => (this.wasm = wasm));
 
     this.size = 15000;
-    this.windDirection = 0;
 
     const generators = 18;
 
@@ -62,7 +60,6 @@ export default class Game {
   }
 
   tick(tick: number) {
-    this.windDirection += Math.random() * 0.05 - 0.048;
 
     this.spatialHashing.clear();
 

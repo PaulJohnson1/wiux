@@ -19,6 +19,7 @@ export default class BaseEntity extends Entity {
   public knockback: number;
   public color: number;
   public style: number;
+  public windDirection: number;
 
   public collides: boolean;
   public detectsCollision: boolean;
@@ -41,6 +42,7 @@ export default class BaseEntity extends Entity {
     this.restLength = 0;
     this.knockback = 0.1;
     this.resistance = 1;
+    this.windDirection = 0;
 
     this.collides = false;
     this.detectsCollision = false;
@@ -77,6 +79,10 @@ export default class BaseEntity extends Entity {
   }
 
   onCollisionCallback(entity: BaseEntity) {}
+  
+  onBorderCollisionCallback(mag: number) {
+    this.applyAcceleration(this.position.dir, (-mag + this.size) / 300000)
+  }
 
   collideWith(entities: Set<BaseEntity>) {
     entities.forEach((entity: BaseEntity) => {
@@ -129,11 +135,12 @@ export default class BaseEntity extends Entity {
     const mag = this.position.x ** 2 + this.position.y ** 2;
 
     if (mag > (this.game.size - this.size) ** 2) {
-      this.applyAcceleration(this.position.dir, -Math.sqrt(mag - (this.game.size - this.size) ** 2) / 100);
+      this.onBorderCollisionCallback(Math.sqrt(mag))
     }
 
     if (this.isAffectedByWind) {
-      this.position = this.position.add(Vector.fromPolar(this.game.windDirection, 0.3));
+      this.windDirection += Math.random() * 0.05 - 0.048;
+      this.velocity = this.velocity.add(Vector.fromPolar(this.windDirection, 0.01));
     }
   }
 }
