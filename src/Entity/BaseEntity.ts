@@ -19,6 +19,7 @@ export default class BaseEntity extends Entity {
   public knockback: number;
   public color: number;
   public style: number;
+  public windDirection: number;
 
   public collides: boolean;
   public detectsCollision: boolean;
@@ -37,10 +38,11 @@ export default class BaseEntity extends Entity {
     this.color = 0;
     this.style = 0;
     this.size = 0;
-    this.friction = 0.95;
+    this.friction = 0.85;
     this.restLength = 0;
-    this.knockback = 0.9;
-    this.resistance = 0.9;
+    this.knockback = 0.1;
+    this.resistance = 1;
+    this.windDirection = 0;
 
     this.collides = false;
     this.detectsCollision = false;
@@ -77,6 +79,10 @@ export default class BaseEntity extends Entity {
   }
 
   onCollisionCallback(entity: BaseEntity) {}
+  
+  onBorderCollisionCallback(mag: number) {
+    this.applyAcceleration(this.position.dir, (-mag + this.size) / 300000)
+  }
 
   collideWith(entities: Set<BaseEntity>) {
     entities.forEach((entity: BaseEntity) => {
@@ -91,20 +97,31 @@ export default class BaseEntity extends Entity {
     });
   }
 
-  findCollisions(): Set<BaseEntity> {
-    const ret: Set<BaseEntity> = new Set();
+  findCollisions() {
+    const possibleCollisions = this.findCollisionCandidates();
+    const found = new Set<BaseEntity>();
 
-    if (!this.detectsCollision) return ret;
+    possibleCollisions.forEach(entity => {
+      const collisionRadius = this.size + entity.size;
+      const delta = entity.position.subtract(this.position);
+
+      if (delta.x ** 2 + delta.y ** 2 < collisionRadius ** 2) found.add(entity); 
+    })
+
+    return found;
+  }
+
+  protected findCollisionCandidates(): Set<BaseEntity> {
+    const found: Set<BaseEntity> = new Set();
+
+    if (!this.detectsCollision) return found;
 
     /** @ts-ignore */
     this.game.spatialHashing.query(this).forEach((entity: BaseEntity) => {
-      const delta = entity.position.subtract(this.position);
-      const collisionDistance = entity.size + this.size;
-
-      if (delta.x ** 2 + delta.y ** 2 < collisionDistance ** 2) ret.add(entity);
+      found.add(entity);
     });
 
-    return ret;
+    return found;
   }
 
   tick(tick: number) {
@@ -113,16 +130,17 @@ export default class BaseEntity extends Entity {
     this.collideWith(this.findCollisions());
 
     this.velocity = this.velocity.scale(this.friction);
-    this.position = this.position.add(this.velocity);
+    this.position = this.position.add(this.velocity.scale(this.game.server.deltaTick));
 
     const mag = this.position.x ** 2 + this.position.y ** 2;
 
     if (mag > (this.game.size - this.size) ** 2) {
-      this.applyAcceleration(this.position.dir, -Math.sqrt(mag - (this.game.size - this.size) ** 2) / 100);
+      this.onBorderCollisionCallback(Math.sqrt(mag))
     }
 
     if (this.isAffectedByWind) {
-      this.position = this.position.add(Vector.fromPolar(this.game.windDirection, 0.3));
+      this.windDirection += Math.random() * 0.05 - 0.048;
+      this.velocity = this.velocity.add(Vector.fromPolar(this.windDirection, 0.01));
     }
   }
 }

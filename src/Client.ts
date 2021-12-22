@@ -113,7 +113,7 @@ export default class Client {
             max: 10
           }
         ];
-        this.playerSpeed = 0.4;
+        this.playerSpeed = 0.05;
         this.updateStats();
         this.sendPlayerId();
       } else if (packetType === 2) {
@@ -145,18 +145,18 @@ export default class Client {
           });
         } else if (id === 2) { // flail friction
           this.player.weapon.flails.forEach(flail => {
-            flail.friction **= 0.9; // keeps getting closer to 1 with each upgrade
+            flail.friction **= 0.95; // keeps getting closer to 1 with each upgrade
           });
         } else if (id === 3) { // rope's spring constant
           this.player.weapon.ropes.forEach(rope => {
-            rope.k += 0.05;
+            rope.k += 0.0005;
           });
         } else if (id === 4) { // rope rest length
           this.player.weapon.ropes.forEach(rope => {
             rope.restLength += 10;
           });
         } else if (id === 5) { // player speed
-          this.playerSpeed += 0.05;
+          this.playerSpeed += 0.005;
         }
 
         this.updateStats();
@@ -237,6 +237,8 @@ export default class Client {
       position: this.player != null ? this.player.position : new Vector(0, 0),
       size: 1100,
     })) as Set<BaseEntity>;
+
+    if (this.player != null) entitiesInView.add(this.player);
 
     this.view.forEach((entity) => {
       if (!entity.sentToClient) return;
