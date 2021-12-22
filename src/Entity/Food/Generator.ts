@@ -34,23 +34,22 @@ export default class Generator extends BaseEntity {
   onCollisionCallback(entity: BaseEntity) {
     if (entity === this) return;
 
-    const delta = this.position.subtract(entity.position);
-    const dir = delta.dir;
+    const delta = entity.position.subtract(this.position);
+    const dir = delta.dir + Math.PI;
 
     if (
-      this.canShootFood &&
-      (entity instanceof Flail || entity instanceof Player)
-    ) {
-      this.animationSizeAddon = 10;
-      this.lastHitTick = this.game.tickCount;
+      !this.canShootFood ||
+      !(entity instanceof Flail || entity instanceof Player)
+    ) return; 
 
-      const foodCount = getBaseLog(entity.velocity.mag + 1, 1.1);
+    this.animationSizeAddon = 10;
+    this.lastHitTick = this.game.tickCount;
 
-      for (let i = 0; i < foodCount; i++) {
-        const food = new Food(this.game, Math.random() < 0.9 ? 200 : 1000);
-        food.position = this.position;
-        food.applyAcceleration(dir + Math.random() * 0.3 - 0.15, Math.random() * 30);
-      }
+    const foodCount = getBaseLog(entity.velocity.mag + 1, 1.35);
+
+    for (let i = 0; i < foodCount; i++) {
+      const food = new Food(this.game, 10, 50);
+      food.position = this.position.movePointByAngle(20 + Math.random() * 50, dir);
     }
   }
 

@@ -42,10 +42,10 @@ export default class Flail extends BaseEntity {
     const area = this.area;
 
     const foodCount = this.size;
-    const foodSize = area / foodCount * 0.7;
+    const foodScore = area / foodCount * 0.7;
 
     for (let i = 0; i < foodCount; i++) {
-      const food = new Food(this.game, foodSize);
+      const food = new Food(this.game, 25, foodScore);
 
       // using polar coords in order to make the food more consentrat,d towards the middle
       food.position = this.position.add(Vector.fromPolar(Math.random() * 6.29, Math.random() * this.size));

@@ -4,12 +4,16 @@ import Game from "../../Game";
 import { Writer } from "../../Coder";
 
 export default class Food extends BaseEntity {
-  constructor(game: Game, area: number) {
+  public score: number;
+
+  constructor(game: Game, size: number, score: number) {
     super(game);
 
-    this.area = area;
+    this.size = size;
+    this.score = score;
 
-    this.knockback = 0.1;
+    this.knockback = 0.05;
+    this.resistance = 2
 
     this.collides = true;
     this.detectsCollision = true;
@@ -20,23 +24,9 @@ export default class Food extends BaseEntity {
   }
 
   onCollisionCallback(entity: BaseEntity) {
-    if (entity === this) return;
-
-    if (entity instanceof Food) {
-      if (this.size + entity.size > 200) return;
-
-      if (this.size > entity.size) {
-        entity.terminate();
-        this.area += entity.area;
-      } else {
-        this.terminate();
-        entity.area += this.area;
-      }
-    }
-
     if (!(entity instanceof Flail)) return;
 
-    entity.area += this.area;
+    entity.area += this.score;
     super.terminate();
   }
 }
