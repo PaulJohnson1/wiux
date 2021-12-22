@@ -45,10 +45,10 @@ export default class Generator extends BaseEntity {
     this.animationSizeAddon = 10;
     this.lastHitTick = this.game.tickCount;
 
-    const foodCount = getBaseLog(entity.velocity.mag + 1, 1.35);
+    const foodCount = getBaseLog(entity.velocity.mag + 1, 1.20);
 
     for (let i = 0; i < foodCount; i++) {
-      const food = new Food(this.game, 10, 50);
+      const food = new Food(this.game, 10, 125);
       food.position = this.position.movePointByAngle(20 + Math.random() * 50, dir);
     }
   }

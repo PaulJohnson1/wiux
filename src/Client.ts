@@ -113,7 +113,7 @@ export default class Client {
             max: 10
           }
         ];
-        this.playerSpeed = 0.05;
+        this.playerSpeed = 0.07;
         this.updateStats();
         this.sendPlayerId();
       } else if (packetType === 2) {
@@ -156,7 +156,7 @@ export default class Client {
             rope.restLength += 10;
           });
         } else if (id === 5) { // player speed
-          this.playerSpeed += 0.005;
+          this.playerSpeed += 0.003;
         }
 
         this.updateStats();
