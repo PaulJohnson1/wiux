@@ -64,6 +64,17 @@ export default class Game {
 
       writer.vu(5);
 
+      let count = 0;
+
+      this.entities.forEach(entity => {
+        if (!(entity instanceof BaseEntity) || !entity.onMinimap) return;
+        if (entity.size < 50) return;
+
+        count++;
+      });
+
+      writer.vu(count);
+
       this.entities.forEach(entity => {
         if (!(entity instanceof BaseEntity) || !entity.onMinimap) return;
         if (entity.size < 50) return;
@@ -74,8 +85,6 @@ export default class Game {
         writer.vu(entity.color);
         writer.vu(entity.size);      
       });
-
-      writer.vi(1234);
 
       const encodedMinimap = writer.write();
 
