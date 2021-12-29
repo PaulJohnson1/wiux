@@ -4,7 +4,7 @@ import Game from "./Game";
 import Player from "./Entity/Player/Player";
 import Entity from "./Entity/Entity";
 import Vector from "./Vector";
-import Shuffler from "./Shuffler/Shuffle";
+import Shuffler from "./Shuffler";
 import BaseEntity from "./Entity/BaseEntity";
 import { Writer, Reader } from "./Coder";
 import { PlayerInputs } from "./types";
@@ -178,12 +178,6 @@ export default class Client {
     });
   }
 
-  get shuffle() {
-    return (packet: ArrayBuffer) => {
-      return packet
-    }
-  }
-
   get statsUsed() {
     return this.stats.reduce((acc, v) => acc + v.value, 0)
   }
@@ -194,7 +188,7 @@ export default class Client {
     writer.vu(4);
     writer.string(this.authKey);
 
-    this.sendPacket(writer.write())
+    this.sendPacket(writer.write());
   }
 
   updateStats() {
@@ -269,7 +263,7 @@ export default class Client {
   }
 
   sendPacket(packet: ArrayBufferLike) {
-    this.socket.send(this.shuffle(new Uint8Array(packet)));
+    this.socket.send(Shuffler.shuffle(packet));
   }
 
   terminateSocket() {
