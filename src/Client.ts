@@ -182,7 +182,7 @@ export default class Client {
     return this.stats.reduce((acc, v) => acc + v.value, 0)
   }
 
-  requestAuth() {
+  private requestAuth() {
     this.authenticated = false;
     const writer = new Writer();
     writer.vu(4);
@@ -191,7 +191,7 @@ export default class Client {
     this.sendPacket(writer.write());
   }
 
-  updateStats() {
+  private updateStats() {
     const writer = new Writer();
     writer.vu(3);
     this.stats.forEach(stat => writer.vu(stat.value));
@@ -201,7 +201,7 @@ export default class Client {
     this.sendPacket(writer.write())
   }
 
-  sendInit() {
+  private sendInit() {
     const writer = new Writer();
     writer.vu(1);
 
@@ -210,7 +210,7 @@ export default class Client {
     this.sendPacket(writer.write())
   }
 
-  sendPlayerId() {
+  private sendPlayerId() {
     if (this.player == null) throw new Error("cannot write player id");
 
     const writer = new Writer();
@@ -221,7 +221,7 @@ export default class Client {
     this.sendPacket(writer.write())
   }
 
-  sendUpdate() {
+  private sendUpdate() {
     const writer = new Writer();
 
     writer.vu(0);

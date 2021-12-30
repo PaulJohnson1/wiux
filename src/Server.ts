@@ -38,7 +38,7 @@ export default class Server {
     }, 1000 / this.ticksPerSecond);
   }
 
-  tick() {
+  private tick() {
     this.game.tick(this.game.tickCount++);
 
     this.clients.forEach(client => client.tick(this.game.tickCount));

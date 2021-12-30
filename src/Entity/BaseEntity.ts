@@ -27,7 +27,7 @@ export default class BaseEntity extends Entity {
   public isAffectedByWind: boolean;
   public onMinimap: boolean;
 
-  constructor(game: Game) {
+  protected constructor(game: Game) {
     super(game);
 
     this.position = Vector.fromPolar(Math.random() * 7, (Math.random() * Math.sqrt(this.game.size)) ** 2);
@@ -97,7 +97,7 @@ export default class BaseEntity extends Entity {
     });
   }
 
-  findCollisions() {
+  private findCollisions() {
     const possibleCollisions = this.findCollisionCandidates();
     const found = new Set<BaseEntity>();
 
