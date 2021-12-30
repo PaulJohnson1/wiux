@@ -3,7 +3,7 @@ import Rope from "../Rope/Rope";
 import Flail from "../Flail";
 import Player from "../Player";
 
-export default class BasicFlail extends BaseDefinition {
+export default class Loop extends BaseDefinition {
   constructor(owner: Player) {
     super(owner);
 
