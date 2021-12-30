@@ -27,8 +27,10 @@ export default class Food extends BaseEntity {
   onCollisionCallback(entity: BaseEntity) {
     if (!(entity instanceof Flail) && !(entity instanceof Player)) return;
 
-    if (entity instanceof Player) entity.weapon.flails[0].area += this.score;
-    else entity.area += this.score;
+    if (entity instanceof Player) {
+      entity.weapon.flails[0].area += this.score;
+    } else entity.area += this.score;
+    
     super.terminate();
   }
 }
