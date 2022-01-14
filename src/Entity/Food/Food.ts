@@ -1,6 +1,5 @@
 import BaseEntity from "../BaseEntity";
 import Flail from "../Player/Flail";
-import Player from "../Player/Player";
 import Game from "../../Game";
 import { Writer } from "../../Coder";
 
@@ -25,12 +24,9 @@ export default class Food extends BaseEntity {
   }
 
   onCollisionCallback(entity: BaseEntity) {
-    if (!(entity instanceof Flail) && !(entity instanceof Player)) return;
+    if (!(entity instanceof Flail)) return;
 
-    if (entity instanceof Player) {
-      entity.weapon.flails[0].area += this.score;
-    } else entity.area += this.score;
-    
+    entity.area += this.score;
     super.terminate();
   }
 }
