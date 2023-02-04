@@ -1,47 +1,50 @@
 import Game from "../../Game";
 import BaseEntity from "../BaseEntity";
 import Flail from "./Flail";
-import Rope from "./Rope/Rope";
 import Client from "../../Client";
 import BasicFlail from "./FlailDefinitions/Basic";
 import FlailDefinition from "./FlailDefinitions/BaseDefinition";
-import { Writer } from "../../Coder";
 
-export default class Player extends BaseEntity {
-  public weapon: FlailDefinition;
-  public client?: Client;
-  public name: string;
-  public color: number;
+export default class Player extends BaseEntity 
+{
+    public weapon: FlailDefinition;
+    public client?: Client;
+    public name: string;
+    public color: number;
 
-  constructor(game: Game, name: string, client?: Client) {
-    super(game); 
+    constructor(game: Game, name: string, client?: Client) 
+    {
+        super(game); 
 
-    this.name = name;
-    this.client = client;
+        this.name = name;
+        this.client = client;
 
-    this.size = 10;
-    this.style = 2;
-    this.color = Math.random() * 360;
+        this.size = 10;
+        this.style = 2;
+        this.color = Math.random() * 360;
 
-    this.collides = true;
-    this.detectsCollision = true;
-    this.onMinimap = true;
+        this.collides = true;
+        this.detectsCollision = true;
+        this.onMinimap = true;
 
-    this.restLength = this.size;
+        this.restLength = this.size;
 
-    this.weapon = new BasicFlail(this);
-  }
-
-  terminate() {
-    super.terminate();
-    this.weapon.terminate();
-
-    if (this.client != null) this.client.player = null;
-  }
-
-  onCollisionCallback(entity: BaseEntity) {
-    if (entity instanceof Flail && entity.owner !== this) {
-      this.terminate();
+        this.weapon = new BasicFlail(this);
     }
-  }
+
+    terminate() 
+    {
+        super.terminate();
+        this.weapon.terminate();
+
+        if (this.client != null) this.client.player = null;
+    }
+
+    onCollisionCallback(entity: BaseEntity) 
+    {
+        if (entity instanceof Flail && entity.owner !== this) 
+        {
+            this.terminate();
+        }
+    }
 }
