@@ -17,12 +17,12 @@ export default class Entity
 
         this.sentToClient = true;
 
-        this.game.entities.add(this);
+        this.game.entities.push(this);
     }
 
     terminate() 
     {
-        this.game.entities.delete(this);
+        this.game.entities.splice(this.game.entities.indexOf(this), 1);
     }
 
     writeBinary(writer: Writer, isCeation: boolean) 

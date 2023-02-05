@@ -4,20 +4,21 @@ import BaseEntity from "./Entity/BaseEntity";
 import Generator from "./Entity/Food/Generator";
 import GameSpatialHashing from "./SpatialHashing";
 import Vector from "./Vector";
-import { Writer } from "./Coder";
+import Leaderboard from "./Leaderboard";
+import Minimap from "./Minimap";
 
 export default class Game 
 {
     public server: Server;
 
-    /* used for getting an entity by its id */
-    public _entities: { [id: number]: Entity };
-    public entities: Set<Entity>;
+    public entities: Entity[] = [];
     public generators: Generator[] = [];
     public tickCount: number;
     public nextId: number;
     public size: number;
     public spatialHashing: GameSpatialHashing;
+    public leaderboard: Leaderboard;
+    public minimap: Minimap;
 
     constructor(server: Server) 
     {
@@ -26,9 +27,9 @@ export default class Game
         this.nextId = 1; // this `1` is needed since entities are null terminated in the protocol
         this.tickCount = 0;
         this.spatialHashing = new GameSpatialHashing();
+        this.leaderboard = new Leaderboard(this);
+        this.minimap = new Minimap(this);
         this.generators = [];
-        this.entities = new Set();
-        this._entities = {};
         this.size = 15000;
 
         const generators = 17;
@@ -46,13 +47,6 @@ export default class Game
     {
         this.spatialHashing.clear();
 
-        this._entities = {};
-
-        this.entities.forEach(entity => 
-        {
-            this._entities[entity.id] = entity;
-        });
-
         this.entities.forEach(entity => 
         {
             if (!(entity instanceof BaseEntity)) return;
@@ -63,42 +57,9 @@ export default class Game
 
         this.entities.forEach(entity => entity.tick(tick));
 
-        if (tick % this.server.ticksPerSecond === 0) 
-        {
-            const writer = new Writer();
-
-            writer.vu(5);
-
-            let count = 0;
-
-            this.entities.forEach(entity => 
-            {
-                if (!(entity instanceof BaseEntity) || !entity.onMinimap) return;
-                if (entity.size < 50) return;
-
-                count++;
-            });
-
-            writer.vu(count);
-
-            this.entities.forEach(entity => 
-            {
-                if (!(entity instanceof BaseEntity) || !entity.onMinimap) return;
-                if (entity.size < 50) return;
-
-                // % across the x and y axis
-                writer.vi(-entity.position.x / this.size * 127);
-                writer.vi(-entity.position.y / this.size * 127);
-                writer.vu(entity.color);
-                writer.vu(entity.size);      
-            });
-
-            const encodedMinimap = writer.write();
-
-            this.server.clients.forEach(client => 
-            {
-                client.sendPacket(encodedMinimap);
-            });
-        }
+        if ((tick & 4) === 4)
+            this.leaderboard.tick();
+        if ((tick & 8) === 8)
+            this.minimap.tick();
     }
 }

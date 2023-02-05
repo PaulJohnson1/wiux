@@ -94,7 +94,7 @@ export default class BaseEntity extends Entity
         this.applyAcceleration(this.position.dir, (-mag + this.size) / 30000)
     }
 
-    collideWith(entities: Set<BaseEntity>) 
+    collideWith(entities: BaseEntity[]) 
     {
         entities.forEach((entity: BaseEntity) => 
         {
@@ -112,14 +112,15 @@ export default class BaseEntity extends Entity
     private findCollisions() 
     {
         const possibleCollisions = this.findCollisionCandidates();
-        const found = new Set<BaseEntity>();
+        const found: BaseEntity[] = [];
 
         possibleCollisions.forEach(entity => 
         {
             const collisionRadius = this.size + entity.size;
             const delta = entity.position.subtract(this.position);
 
-            if (delta.x ** 2 + delta.y ** 2 < collisionRadius ** 2) found.add(entity); 
+            if (delta.x ** 2 + delta.y ** 2 < collisionRadius ** 2)
+                found.push(entity); 
         })
 
         return found;

@@ -9,6 +9,7 @@ import { PlayerInputs } from "../types";
 import { getBaseLog } from "../util";
 import Stats from "./Stats";
 import Stat from "./Stat";
+import { ClientboundPacketId } from "../Constants";
 
 const hash = (str: string) => crypto.createHash("sha256").update(str).digest("hex");
 
@@ -18,7 +19,7 @@ export default class Client
     public inputs: PlayerInputs;
     public game: Game;
     public player: Player | null;
-    public view: Set<BaseEntity>;
+    public view: BaseEntity[] = [];
     public stats: Stats;
     public playerSpeed: number;
     public authenticated: boolean;
@@ -45,7 +46,6 @@ export default class Client
             new Stat(stat => this.playerSpeed += 0.003)
         ]);
         this.playerSpeed = 0;
-        this.view = new Set();
         this.inputs = { angle: 0, distance: 0, mousePressed: false };
         this.socket = socket;
 
@@ -94,6 +94,7 @@ export default class Client
                 if (statsUsed >= statsAvailable) return;
         
                 stat.upgrade();
+                this.updateStats();
             }
             else if (packetType === 3) 
             {
@@ -119,7 +120,7 @@ export default class Client
     {
         this.authenticated = false;
         const writer = new Writer();
-        writer.vu(4);
+        writer.vu(ClientboundPacketId.AuthRequested);
         writer.string(this.authKey);
 
         this.sendPacket(writer.write());
@@ -128,7 +129,7 @@ export default class Client
     private updateStats() 
     {
         const writer = new Writer();
-        writer.vu(3);
+        writer.vu(ClientboundPacketId.Stats);
         this.stats.writeBinary(writer);
         writer.vu(this.stats.statsUsed);
 
@@ -138,7 +139,7 @@ export default class Client
     private sendInit() 
     {
         const writer = new Writer();
-        writer.vu(1);
+        writer.vu(ClientboundPacketId.Initial);
 
         writer.vu(this.game.size);
 
@@ -150,10 +151,8 @@ export default class Client
         if (this.player == null) throw new Error("cannot write player id");
 
         const writer = new Writer();
-        writer.vu(2);
-
+        writer.vu(ClientboundPacketId.PlayerId);
         writer.vu(this.player.id);
-
         this.sendPacket(writer.write())
     }
 
@@ -161,23 +160,24 @@ export default class Client
     {
         const writer = new Writer();
 
-        writer.vu(0);
+        writer.vu(ClientboundPacketId.Update);
 
-        /** @ts-ignore since the constructor for this.game.spatialHashing has a game param, it will return Set<BaseEntity> */
-        const entitiesInView = new Set(this.game.spatialHashing.query({
+        const entitiesInView = this.game.spatialHashing.query({
             position: this.player != null ? this.player.position : new Vector(0, 0),
             size: 1900,
-        })) as Set<BaseEntity>;
+        } as BaseEntity /** risky */);
 
-        if (this.player != null) entitiesInView.add(this.player);
+        if (this.player != null)
+            if (entitiesInView.indexOf(this.player as Player) === -1)
+                entitiesInView.push(this.player as Player);
 
         this.view.forEach((entity) => 
         {
             if (!entity.sentToClient) return;
 
-            if (!entitiesInView.has(entity)) 
+            if (entitiesInView.indexOf(entity) === -1) 
             {
-                this.view.delete(entity);
+                this.view.splice(this.view.indexOf(entity), 1);
                 writer.vu(entity.id);
             }
         });
@@ -188,9 +188,9 @@ export default class Client
         {
             if (!entity.sentToClient) return;
 
-            const isCreation = !this.view.has(entity);
+            const isCreation = this.view.indexOf(entity) === -1;
 
-            if (isCreation) this.view.add(entity);
+            if (isCreation) this.view.push(entity);
 
             writer.vu(entity.id);
             writer.vu(isCreation ? 1 : 0);
@@ -220,11 +220,8 @@ export default class Client
     tick(tick: number) 
     {
         this.sendUpdate();
-
         if (this.player == null) return;
-
         if (this.inputs.distance > 80) this.player.applyAcceleration(this.inputs.angle + Math.PI, this.playerSpeed);
-
         this.player.tick(tick);
     }
 }

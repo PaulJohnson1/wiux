@@ -7,7 +7,7 @@ export default class Rope extends BaseEntity
 {
     public k: number;
     public length: number;
-    public segments: Set<BaseEntity>;
+    public segments: BaseEntity[];
     public owner: BaseEntity;
 
     constructor(game: Game, entity1: BaseEntity, entity2: BaseEntity, length: number, springConstant: number, restLength: number) 
@@ -21,7 +21,7 @@ export default class Rope extends BaseEntity
 
         this.detectsCollision = false;
 
-        this.segments = new Set([this.owner]);
+        this.segments = [this.owner];
 
         for (let i = 0; i < this.length; i++) 
         {
@@ -29,10 +29,10 @@ export default class Rope extends BaseEntity
 
             ropeSegment.restLength = this.restLength;
 
-            this.segments.add(ropeSegment);
+            this.segments.push(ropeSegment);
         }
 
-        this.segments.add(entity2);
+        this.segments.push(entity2);
     }
 
     /** @ts-ignore */
@@ -50,8 +50,7 @@ export default class Rope extends BaseEntity
         if (isCreation) 
         {
             writer.vu(2);
-
-            writer.vu(this.segments.size);
+            writer.vu(this.segments.length);
         }
 
         this.segments.forEach(segment => 
