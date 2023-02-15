@@ -13,15 +13,13 @@ export default class Generator extends BaseEntity
     private canShootFood: boolean;
     private hitsUntilDeath: number;
     private diedOnTick:number;
-    private spawnTick: number;
-    private terminated = false;
     public red: boolean;
 
     constructor(game: Game, red = false) 
     {
         super(game);
+        this.position = this.game.findSpawnPosition();
         this.red = red;
-        this.spawnTick = this.game.tickCount;
         this.animationSizeAddon = 0;
         this.canShootFood = true;
         this.lastHitTick = 0;
@@ -47,7 +45,7 @@ export default class Generator extends BaseEntity
 
         if (
             !this.canShootFood ||
-      !(entity instanceof Flail || entity instanceof Player)
+            !(entity instanceof Flail || entity instanceof Player)
         ) return; 
 
         this.hitsUntilDeath--;
@@ -106,22 +104,15 @@ export default class Generator extends BaseEntity
 
     terminate() 
     {
-        if (this.terminated) return;
-        new Generator(this.game, this.red);
-        this.terminated = true;
+        new Generator(this.game, true);
         super.terminate();
     }
 
     tick(tick: number) 
     {
-        const despawning = this.game.tickCount - this.spawnTick > 20_000;
-        const despawnedThisTick = this.game.tickCount - this.spawnTick === 20_000;
-        const terminatingThisTick = this.game.tickCount - this.spawnTick === 20_100;
-        if (despawnedThisTick)
-            this.startDeathAnimation();
-        if (this.hitsUntilDeath < 0 || despawning)
+        if (this.hitsUntilDeath < 0)
             this.tickDeathAnimation();
-        if ((this.hitsUntilDeath < 0 && this.game.tickCount - this.diedOnTick > 200) || terminatingThisTick)
+        if (this.hitsUntilDeath < 0 && this.game.tickCount - this.diedOnTick > 200)
             this.terminate();
         this.canShootFood = this.lastHitTick < tick - this.hitCooldown;
 

@@ -60,7 +60,8 @@ export default class Flail extends BaseEntity
 
     tick(tick: number) 
     {
-        this.score *= 0.998
+        if (this.size > 50)
+            this.score *= 0.998
         this.size = 20 * Math.sqrt(this.score * 3);
         this.restLength = this.size;
 

@@ -20,8 +20,8 @@ export default class Minimap {
 
         for (const object of this.objects)
         {
-            packet.vu(object.position.x);
-            packet.vu(object.position.y);
+            packet.vi(object.position.x);
+            packet.vi(object.position.y);
             packet.vu(object.color);
             packet.vu(object.size);
         }

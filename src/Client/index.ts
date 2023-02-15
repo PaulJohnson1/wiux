@@ -35,7 +35,6 @@ export default class Client
         this.authKey = crypto.randomBytes(100).toString("hex");
         this.wantedAuth = hash(this.authKey);
         this.sentAuth = false;
-
         this.player = null;
         this.stats = new Stats([
             new Stat(stat => this.player?.weapon.flails.forEach(flail => flail.knockback /= 0.9)),
@@ -50,14 +49,13 @@ export default class Client
         this.socket = socket;
 
         this.sendInit();
-
         this.requestAuth();
 
         this.socket.on("message", data => 
         {
             const reader = new Reader(data as Buffer);
-
             const packetType = reader.vu();
+
             if (packetType === 0) 
             {
                 this.inputs.mousePressed = !!reader.vu();

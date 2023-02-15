@@ -11,8 +11,10 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@rivet-gg/api": "^0.0.1-rc10",
     "@types/node": "^16.11.6",
     "@types/ws": "^8.2.0",
+    "dotenv": "^16.0.3",
     "typescript": "^4.5.2",
     "ws": "^8.2.3"
   },

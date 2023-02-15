@@ -13,9 +13,16 @@ export default class RopeSegment extends BaseEntity
 
         this.isAffectedByRope = true;
         this.collides = false;
+        this.detectsCollision = false;
         this.sentToClient = false;
+        this.isAffectedByWind = false;
         this.owner = owner;
 
         this.position = this.owner.position;
+    }
+
+    public tick(tick: number)
+    {
+        super.tick(tick);
     }
 }

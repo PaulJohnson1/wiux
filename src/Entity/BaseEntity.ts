@@ -33,7 +33,7 @@ export default class BaseEntity extends Entity
     {
         super(game);
 
-        this.position = Vector.fromPolar(Math.random() * 7, (Math.random() * Math.sqrt(this.game.size)) ** 2);
+        this.position = new Vector(0, 0);
         this.velocity = new Vector(0, 0);
 
         this.name = "";
@@ -138,6 +138,16 @@ export default class BaseEntity extends Entity
         });
 
         return found;
+    }
+
+    public distanceBetween(other: BaseEntity)
+    {
+        return this.position.distance(other.position) - this.size - other.size;
+    }
+
+    public distanceToPoint(point: Vector)
+    {
+        return this.position.distance(point) - this.size;
     }
 
     tick(tick: number) 

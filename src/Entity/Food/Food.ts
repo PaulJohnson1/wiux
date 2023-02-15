@@ -29,7 +29,7 @@ export default class Food extends BaseEntity
         if (!(entity instanceof Flail)) return;
 
         entity.score += this.score;
-        super.terminate();
+        this.terminate();
     }
 
     tick(tick: number) 
@@ -37,6 +37,6 @@ export default class Food extends BaseEntity
         super.tick(tick);
         this.score *= 0.997
         this.size *= 0.997
-        if (this.size < 5 || this.score < 1) this.terminate();
+        if (this.size < 2 || this.score < 0.2) this.terminate();
     }
 }

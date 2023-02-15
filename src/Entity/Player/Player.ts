@@ -22,6 +22,7 @@ export default class Player extends BaseEntity
         this.size = 10;
         this.style = 2;
         this.color = Math.random() * 360;
+        this.position = this.game.findSpawnPosition();
 
         this.collides = true;
         this.detectsCollision = true;

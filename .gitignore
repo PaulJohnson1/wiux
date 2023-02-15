@@ -4,3 +4,6 @@ src/Shuffler/shuffle.wat
 dist/
 build/
 node_modules/
+### Rivet ###
+.rivet/
+.env

@@ -12,7 +12,6 @@ export default class Game
     public server: Server;
 
     public entities: Entity[] = [];
-    public generators: Generator[] = [];
     public tickCount: number;
     public nextId: number;
     public size: number;
@@ -29,18 +28,44 @@ export default class Game
         this.spatialHashing = new GameSpatialHashing();
         this.leaderboard = new Leaderboard(this);
         this.minimap = new Minimap(this);
-        this.generators = [];
         this.size = 15000;
 
         const generators = 17;
         for (let i = 0; i < generators; i++) 
         {
             const generator = new Generator(this);
-            generator.position = Vector.fromPolar(Math.random() * 6, Math.random() * this.size);
+            generator.position = this.findSpawnPosition();
         }
 
         const generator = new Generator(this, true);
         generator.position = new Vector(0, 0);
+    }
+
+    public randomPointInMap()
+    {
+        return new Vector(0, 0).movePointByAngle(Math.random() * this.size, Math.random() * Math.PI * 2);
+    }
+
+    public findSpawnPosition()
+    {
+        // 200 attempts.
+        let furthestPosition = this.randomPointInMap();
+        for (let i = 0; i < 200; i++)
+        {
+            const attemptedPosition = this.randomPointInMap();
+            const entitiesNear = this.spatialHashing.queryRaw(attemptedPosition.x, attemptedPosition.y, 2000).filter(e => e.distanceToPoint(attemptedPosition) < 2000);
+            if (entitiesNear.length === 0)
+                return attemptedPosition;
+            let closestEntity = entitiesNear[0];
+            for (const entity of entitiesNear)
+                if (entity.distanceBetween(closestEntity) < closestEntity.distanceToPoint(attemptedPosition))
+                    closestEntity = entity;
+
+            if (closestEntity.distanceToPoint(attemptedPosition) > furthestPosition.distance(attemptedPosition))
+                furthestPosition = attemptedPosition;
+        }
+
+        return furthestPosition;
     }
 
     tick(tick: number) 

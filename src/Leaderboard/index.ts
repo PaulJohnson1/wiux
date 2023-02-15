@@ -42,7 +42,7 @@ export default class Leaderboard {
         const clientsWithPlayer = this.game.server.clients.filter(client => client.player != null);
 
         /** @ts-ignore all clients in this array have a player*/
-        clientsWithPlayer.sort((a, b) => a.player.weapon.flails[0].score - b.player.weapon.flails[0].score);
+        clientsWithPlayer.sort((a, b) => b.player.weapon.flails[0].score - a.player.weapon.flails[0].score);
 
         const entryCount = Math.min(9, clientsWithPlayer.length);
 
