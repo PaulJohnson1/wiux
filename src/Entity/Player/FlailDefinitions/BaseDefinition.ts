@@ -1,6 +1,7 @@
 import Player from "../Player";
 import Flail from "../Flail";
 import Rope from "../Rope/Rope";
+import BaseEntity from "../../BaseEntity";
 
 export default class BaseDefinition 
 {
@@ -15,9 +16,9 @@ export default class BaseDefinition
         this.ropes = [];
     }
 
-    public terminate() 
+    public terminate(killedBy?: BaseEntity) 
     {
-        this.flails.forEach(flail => flail.terminate());
-        this.ropes.forEach(rope => rope.terminate());
+        this.flails.forEach(flail => flail.terminate(killedBy));
+        this.ropes.forEach(rope => rope.terminate(killedBy));
     }
 }

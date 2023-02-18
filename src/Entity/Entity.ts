@@ -1,5 +1,6 @@
 import Game from "../Game";
 import { Writer } from "../Coder";
+import BaseEntity from "./BaseEntity"
 
 /**
  * Lowest level of an entity
@@ -20,7 +21,7 @@ export default class Entity
         this.game.entities.push(this);
     }
 
-    terminate() 
+    terminate(killedBy?: BaseEntity) 
     {
         this.game.entities.splice(this.game.entities.indexOf(this), 1);
     }
@@ -28,6 +29,6 @@ export default class Entity
     writeBinary(writer: Writer, isCeation: boolean) 
     {}
 
-    tick(tick: number) 
+    tick() 
     {}
 }

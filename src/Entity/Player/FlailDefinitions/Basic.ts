@@ -14,9 +14,9 @@ export default class BasicFlail extends BaseDefinition
             this.owner.game,
             this.owner,
             this.flails[0],
-            3,
-            0.009,
-            20
+            10,
+            0.5,
+            10
         );
     }
 }

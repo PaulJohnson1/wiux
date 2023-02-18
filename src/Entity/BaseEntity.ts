@@ -43,7 +43,7 @@ export default class BaseEntity extends Entity
         this.size = 0;
         this.friction = 0.85;
         this.restLength = 0;
-        this.knockback = 0.1;
+        this.knockback = 10;
         this.resistance = 1;
         this.windDirection = 0;
 
@@ -91,22 +91,19 @@ export default class BaseEntity extends Entity
   
     onBorderCollisionCallback(mag: number) 
     {
-        this.applyAcceleration(this.position.dir, (-mag + this.size) / 30000)
+        this.applyAcceleration(this.position.dir, (-mag + this.size) / 2000)
     }
 
-    collideWith(entities: BaseEntity[]) 
+    collideWith(entity: BaseEntity) 
     {
-        entities.forEach((entity: BaseEntity) => 
-        {
-            if (entity.detectsCollision) this.onCollisionCallback(entity);
+        if (entity.detectsCollision) this.onCollisionCallback(entity);
 
-            if (!entity.collides || !this.collides) return;
-            const delta = this.position.subtract(entity.position);
-            const deltaDir = delta.dir;
+        if (!entity.collides || !this.collides) return;
+        const delta = this.position.subtract(entity.position);
+        const deltaDir = delta.dir;
 
-            this.applyAcceleration(deltaDir, entity.knockback * this.resistance);
-            entity.applyAcceleration(deltaDir + Math.PI, this.knockback * entity.resistance);
-        });
+        this.applyAcceleration(deltaDir, entity.knockback * this.resistance);
+        entity.applyAcceleration(deltaDir + Math.PI, this.knockback * entity.resistance);
     }
 
     private findCollisions() 
@@ -150,14 +147,15 @@ export default class BaseEntity extends Entity
         return this.position.distance(point) - this.size;
     }
 
-    tick(tick: number) 
+    tick() 
     {
-        super.tick(tick);
+        super.tick();
 
-        this.collideWith(this.findCollisions());
+        const collisions = this.findCollisions();
+        for (const entity of collisions) this.collideWith(entity);
 
         this.velocity = this.velocity.scale(this.friction);
-        this.position = this.position.add(this.velocity.scale(this.game.server.deltaTick));
+        this.position = this.position.add(this.velocity);
 
         const mag = this.position.x ** 2 + this.position.y ** 2;
 

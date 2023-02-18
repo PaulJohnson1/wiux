@@ -60,24 +60,22 @@ export default class Rope extends BaseEntity
         });
     }
 
-    terminate() 
+    terminate(killedBy?: BaseEntity) 
     {
-        super.terminate();
+        super.terminate(killedBy);
 
         this.segments.forEach(segment => 
         {
-            if (segment instanceof RopeSegment) segment.terminate();
+            if (segment instanceof RopeSegment) segment.terminate(killedBy);
         });
     }
 
-    tick(tick: number) 
+    tickPhysics()
     {
-        const segments = Array.from(this.segments);
-
-        for (let i = 1; i < segments.length; i++) 
+        for (let i = 1; i < this.segments.length; i++) 
         {
-            const a = segments[i - 1];
-            const b = segments[i];
+            const a = this.segments[i - 1];
+            const b = this.segments[i];
 
             const delta = a.position.subtract(b.position);
             const x = delta.mag - Math.max(a.restLength, b.restLength);
@@ -89,6 +87,16 @@ export default class Rope extends BaseEntity
             force = force.scale(-1);
 
             if (b.isAffectedByRope) b.applyAcceleration(force.x, force.y, false);
+
+            // can only call subticks on the rope segments, not the objects on the end (example: player, flail)
+            if (a instanceof RopeSegment) a.tickPhysics();
+            if (b instanceof RopeSegment) b.tickPhysics();
         }
+    }
+
+    tick() 
+    {
+        const dt = 5;
+        for (let i = 0; i < dt; i++) this.tickPhysics();
     }
 }

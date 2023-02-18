@@ -30,15 +30,12 @@ export default class Game
         this.minimap = new Minimap(this);
         this.size = 15000;
 
-        const generators = 17;
-        for (let i = 0; i < generators; i++) 
-        {
-            const generator = new Generator(this);
-            generator.position = this.findSpawnPosition();
-        }
-
-        const generator = new Generator(this, true);
-        generator.position = new Vector(0, 0);
+        const distance = 5500;
+        new Generator(this).position = new Vector(-distance, -distance);
+        new Generator(this).position = new Vector(-distance, distance);
+        new Generator(this).position = new Vector(distance, -distance);
+        new Generator(this).position = new Vector(distance, distance);
+        new Generator(this, true).position = new Vector(0, 0);
     }
 
     public randomPointInMap()
@@ -68,8 +65,9 @@ export default class Game
         return furthestPosition;
     }
 
-    tick(tick: number) 
+    tick() 
     {
+        this.tickCount++;
         this.spatialHashing.clear();
 
         this.entities.forEach(entity => 
@@ -80,11 +78,11 @@ export default class Game
             this.spatialHashing.insert(entity);
         });
 
-        this.entities.forEach(entity => entity.tick(tick));
+        this.entities.forEach(entity => entity.tick());
 
-        if ((tick & 4) === 4)
+        if ((this.tickCount & 4) === 4)
             this.leaderboard.tick();
-        if ((tick & 8) === 8)
+        if ((this.tickCount & 8) === 8)
             this.minimap.tick();
     }
 }

@@ -36,7 +36,7 @@ export default class Minimap {
         for (const entity of this.game.entities) {
             if (!(entity instanceof BaseEntity))
                 continue;
-            if (entity.size < 50)
+            if (!entity.onMinimap)
                 continue;
 
             const object = new MapObject();

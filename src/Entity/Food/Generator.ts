@@ -11,26 +11,21 @@ export default class Generator extends BaseEntity
     private hitCooldown: number;
     private animationSizeAddon: number;
     private canShootFood: boolean;
-    private hitsUntilDeath: number;
-    private diedOnTick:number;
-    public red: boolean;
+    private red: boolean;
 
-    constructor(game: Game, red = false) 
+    constructor(game: Game, red: boolean = false) 
     {
         super(game);
-        this.position = this.game.findSpawnPosition();
         this.red = red;
+        this.size = red ? 300 : 200;
         this.animationSizeAddon = 0;
         this.canShootFood = true;
         this.lastHitTick = 0;
-        this.hitCooldown = 2;
-        this.size = red ? 400 : 200;
-        this.knockback = 0.2;
+        this.hitCooldown = 5;
+        this.knockback = 4;
         this.resistance = 0;
         this.style = 0;
         this.color = red ? 0 : 100;
-        this.hitsUntilDeath = red ? 20 : 100;
-        this.diedOnTick = 0;
         this.collides = true;
         this.detectsCollision = true;
         this.onMinimap = true;
@@ -48,21 +43,13 @@ export default class Generator extends BaseEntity
             !(entity instanceof Flail || entity instanceof Player)
         ) return; 
 
-        this.hitsUntilDeath--;
-
-        if (this.hitsUntilDeath === 0)
-            this.startDeathAnimation();
-
-        this.animationSizeAddon = 7;
+        this.animationSizeAddon = this.red ? 50 : 20;
         this.lastHitTick = this.game.tickCount;
 
-        const foodCount = entity.velocity.mag + 1;
-
-        for (let i = 0; i < foodCount; i++) 
+        for (let i = 0; i < 3; i++) 
         {
-            const rand = Math.random() * (this.red ? 4 : 1);
-            const food = new Food(this.game, rand * 20 + 4, (rand * 2) ** 2);
-            food.position = this.position.movePointByAngle(20 + Math.random() * 50, dir - 0.05 + Math.random() * 0.1);
+            const food = new Food(this.game, this.red ? 15 : 10, this.red ? 4.5 : 3);
+            food.position = this.position.movePointByAngle(20 + Math.random() * 50, dir - 0.025 + Math.random() * 0.05);
         }
     }
 
@@ -81,43 +68,12 @@ export default class Generator extends BaseEntity
         writer.vu(this.size + this.animationSizeAddon);
     }
 
-    private startDeathAnimation()
+    tick() 
     {
-        this.diedOnTick = this.game.tickCount;
-        const foodCount = 100;
-        for (let i = 0; i < foodCount; i++)
-        {
-            const rand = Math.random() * (this.red ? 3 : 1.5);
-            const food = new Food(this.game, rand * 20 + 4, (rand * 2) ** 2);
-            food.position = this.position.movePointByAngle(10, Math.PI * 2 / 100 * i);
-        }
-    }
-
-    private tickDeathAnimation()
-    {
-        if (this.size > 50)
-            this.size--;
-        const ticksSinceDeath = this.game.tickCount - this.diedOnTick;
-        const food = new Food(this.game, this.red ? 30 : 10, this.red ? 7 : 2);
-        food.position = this.position.movePointByAngle(10, Math.PI * 2 / 100 * ticksSinceDeath);
-    }
-
-    terminate() 
-    {
-        new Generator(this.game, true);
-        super.terminate();
-    }
-
-    tick(tick: number) 
-    {
-        if (this.hitsUntilDeath < 0)
-            this.tickDeathAnimation();
-        if (this.hitsUntilDeath < 0 && this.game.tickCount - this.diedOnTick > 200)
-            this.terminate();
-        this.canShootFood = this.lastHitTick < tick - this.hitCooldown;
+        this.canShootFood = this.lastHitTick < this.game.tickCount - this.hitCooldown;
 
         this.animationSizeAddon *= 0.7;
 
-        super.tick(tick);
+        super.tick();
     }
 }

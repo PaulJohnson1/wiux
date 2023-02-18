@@ -13,8 +13,8 @@ export default class Food extends BaseEntity
         this.size = size;
         this.score = score;
 
-        this.knockback = 0.05;
-        this.resistance = 2
+        this.knockback = 1;
+        this.resistance = 5
 
         this.collides = true;
         this.detectsCollision = true;
@@ -32,11 +32,8 @@ export default class Food extends BaseEntity
         this.terminate();
     }
 
-    tick(tick: number) 
+    tick() 
     {
-        super.tick(tick);
-        this.score *= 0.997
-        this.size *= 0.997
-        if (this.size < 2 || this.score < 0.2) this.terminate();
+        super.tick();
     }
 }

@@ -4,6 +4,7 @@ import Player from "./Player";
 import Food from "../Food/Food";
 import Rope from "./Rope/Rope";
 import Vector from "../../Vector";
+import { getBaseLog } from "../../util";
 
 /**
  * Child of a player
@@ -24,8 +25,9 @@ export default class Flail extends BaseEntity
         this.rope = null;
 
         this.size = 50;
-        this.score = 6.25;
+        this.score = 50;
         this.style = 1;
+        this.resistance = 4
 
         this.isAffectedByRope = true;
         this.collides = true;
@@ -39,15 +41,27 @@ export default class Flail extends BaseEntity
     {
         const addedVel = polar ? Vector.fromPolar(theta, distance) : new Vector(theta, distance);
 
-        this.velocity = this.velocity.add(addedVel.scale(1)); // eventually replace this 1 with some expression that will make the bigger flails a lot slower than the small one but not make them unmovable
+        this.velocity = this.velocity.add(addedVel);
     }
 
-    terminate() 
+    collideWith(entity: BaseEntity) 
     {
-        super.terminate();
+        if (entity.detectsCollision) this.onCollisionCallback(entity);
+        if (!entity.collides || !this.collides) return;
+
+        const delta = this.position.subtract(entity.position);
+        const deltaDir = delta.dir;
+
+        this.applyAcceleration(deltaDir, entity.knockback * this.resistance);
+        if (!(entity instanceof Player)) entity.applyAcceleration(deltaDir + Math.PI, this.knockback * entity.resistance);
+    }
+
+    terminate(killedBy?: BaseEntity) 
+    {
+        super.terminate(killedBy);
 
         const foodCount = this.size / 10 + 1;
-        const foodScore = this.score / foodCount * 0.7;
+        const foodScore = Math.sqrt(this.score) / foodCount;
 
         for (let i = 0; i < foodCount; i++) 
         {
@@ -58,13 +72,11 @@ export default class Flail extends BaseEntity
         }
     }
 
-    tick(tick: number) 
+    tick() 
     {
-        if (this.size > 50)
-            this.score *= 0.998
-        this.size = 20 * Math.sqrt(this.score * 3);
+        this.size = 100 * getBaseLog(this.score / 1000 + 1, 1.11);
         this.restLength = this.size;
 
-        super.tick(tick);
+        super.tick();
     }
 }

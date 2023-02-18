@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="wiux_favicon.png"/>
+    <meta charset="UTF-8">
+    <meta name="google-site-verification" content="Kx5-yVnOQwXnvLYVi4VAaJ4TxbBFmm0sS1MKg7-9daQ" />
+    <meta content="wiux.io" property="og:title" />
+    <meta content="open source io game" property="og:description" />
+    <meta content="https://wiux-frontend.pauljohnson11.repl.co" property="og:url" />
+    <meta content="wiux_favicon.png" property="og:image" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Paul Johnson">
+    <meta name="keywords" content="game, io game, wiux">
+    <meta name="description" content="Attack and dodge other players while not getting hit!">
+
+    <title>wiux.io</title>
+
+    <style>
+      body, canvas {
+        margin: 0px;
+        overflow: hidden;
+        padding: 0px;
+      }
+
+      #input {
+        font-family: sans-serif;
+        font-size: 200%;
+        height: 6%;
+        left: 50%;
+        padding: 0px 10px;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 15%;
+      }
+
+      #spawn {
+        background-color: #7c7c7c;
+        border-radius: 15px;
+        font-size: 200%;
+        font-family: sans-serif;
+        height: 45px;
+        left: 50%;
+        padding: 10px 10px;
+        position: absolute;
+        text-align: center;
+        top: 60%;
+        transform: translate(-50%, -50%);
+        vertical-align: middle;
+        width: 180px;
+        cursor: pointer;
+      }
+
+      #background {
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+      }
+
+      .boring {
+        font: 20px Arial;
+        left: 20px;
+        position: fixed;
+        top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <img id="background" src="wiux_background.png"/>
+    <input id="input" placeholder="Name" maxlength=50></input>
+    <div id="spawn">Connecting...</div>
+    <div class="boring" id="legal">
+      <a style="color: #fff;" href="/boring/pp.html">Privacy Policy</a>
+      <a style="color: #fff;" href="/boring/tos.html">Terms of use</a>
+    </div>
+    <canvas id="canvas"></canvas>
+    <script type="module" src="script.js?cache=gone-lmfao1"></script>
+  </body>
+</html>

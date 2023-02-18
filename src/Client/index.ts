@@ -26,11 +26,13 @@ export default class Client
     private authKey: string;
     private wantedAuth: string;
     private sentAuth: boolean;
+    private fov: number;
 
     constructor(game: Game, socket: WebSocket) 
     {
         this.game = game;
 
+        this.fov = 1;
         this.authenticated = false;
         this.authKey = crypto.randomBytes(100).toString("hex");
         this.wantedAuth = hash(this.authKey);
@@ -38,11 +40,8 @@ export default class Client
         this.player = null;
         this.stats = new Stats([
             new Stat(stat => this.player?.weapon.flails.forEach(flail => flail.knockback /= 0.9)),
-            new Stat(stat => this.player?.weapon.flails.forEach(flail => flail.resistance *= 0.9)),
-            new Stat(stat => this.player?.weapon.flails.forEach(flail => flail.friction **= 0.95)),
-            new Stat(stat => this.player?.weapon.ropes.forEach(rope => rope.k += 0.001)),
-            new Stat(stat => this.player?.weapon.ropes.forEach(rope => rope.restLength += 15)),
-            new Stat(stat => this.playerSpeed += 0.003)
+            new Stat(stat => this.playerSpeed += 0.15),
+            new Stat(stat => this.fov += 0.05)
         ]);
         this.playerSpeed = 0;
         this.inputs = { angle: 0, distance: 0, mousePressed: false };
@@ -70,7 +69,8 @@ export default class Client
                 const name = reader.string().substring(0, 50);
                 this.player = new Player(this.game, name, this);
                 this.stats.reset();
-                this.playerSpeed = 0.07;
+                this.playerSpeed = 5;
+                this.fov = 1;
                 this.updateStats();
                 this.sendPlayerId();
             }
@@ -86,7 +86,7 @@ export default class Client
                 if (stat.value >= stat.max) return;
 
                 // https://www.desmos.com/calculator/7zrxbkgeqp graph of statsAvailable. y = stats, x = flail size
-                const statsAvailable = 1.5 * getBaseLog(this.player.weapon.flails[0].size / 23, 1.12);
+                const statsAvailable = 1.5 * getBaseLog(this.player.weapon.flails[0].size, 2);
                 const statsUsed = this.stats.statsUsed;
 
                 if (statsUsed >= statsAvailable) return;
@@ -162,8 +162,8 @@ export default class Client
 
         const entitiesInView = this.game.spatialHashing.query({
             position: this.player != null ? this.player.position : new Vector(0, 0),
-            size: 1900,
-        } as BaseEntity /** risky */);
+            size: 1900 * this.fov,
+        });
 
         if (this.player != null)
             if (entitiesInView.indexOf(this.player as Player) === -1)
@@ -215,11 +215,11 @@ export default class Client
         this.game.server.clients.splice(this.game.server.clients.indexOf(this), 1);
     }
 
-    tick(tick: number) 
+    tick() 
     {
         this.sendUpdate();
         if (this.player == null) return;
         if (this.inputs.distance > 80) this.player.applyAcceleration(this.inputs.angle + Math.PI, this.playerSpeed);
-        this.player.tick(tick);
+        this.player.tick();
     }
 }

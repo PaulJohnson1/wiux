@@ -1,5 +1,13 @@
 import BaseEntity from "./Entity/BaseEntity";
 
+export interface QueryBounds {
+    position: {
+        x: number;
+        y: number;
+    }
+    size: number;
+}
+
 export default class SpatialHashing 
 {
     private hashMap = new Map<number, BaseEntity[]>();
@@ -63,7 +71,7 @@ export default class SpatialHashing
         return result;
     }
 
-    query(entity: BaseEntity): BaseEntity[] 
+    query(entity: QueryBounds): BaseEntity[] 
     {
         return this.queryRaw(entity.position.x, entity.position.y, entity.size);
     }

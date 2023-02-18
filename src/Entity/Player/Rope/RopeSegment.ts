@@ -21,8 +21,14 @@ export default class RopeSegment extends BaseEntity
         this.position = this.owner.position;
     }
 
-    public tick(tick: number)
+    public tickPhysics()
     {
-        super.tick(tick);
+        this.velocity = this.velocity.scale(this.friction);
+        this.position = this.position.add(this.velocity);
+    }
+
+    public tick()
+    {
+        // do not call super tick because the physics for this object are managed by the owner instead of this class.
     }
 }

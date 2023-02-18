@@ -23,20 +23,21 @@ export default class Player extends BaseEntity
         this.style = 2;
         this.color = Math.random() * 360;
         this.position = this.game.findSpawnPosition();
+        this.knockback = 2
 
         this.collides = true;
         this.detectsCollision = true;
-        this.onMinimap = true;
+        this.onMinimap = false;
 
         this.restLength = this.size;
 
         this.weapon = new BasicFlail(this);
     }
 
-    terminate() 
+    terminate(killedBy?: BaseEntity) 
     {
-        super.terminate();
-        this.weapon.terminate();
+        super.terminate(killedBy);
+        this.weapon.terminate(killedBy);
 
         if (this.client != null) this.client.player = null;
     }
@@ -45,7 +46,19 @@ export default class Player extends BaseEntity
     {
         if (entity instanceof Flail && entity.owner !== this) 
         {
-            this.terminate();
+            this.terminate(entity);
         }
+    }
+
+    collideWith(entity: BaseEntity) 
+    {
+        if (entity.detectsCollision) this.onCollisionCallback(entity);
+        if (!entity.collides || !this.collides) return;
+
+        const delta = this.position.subtract(entity.position);
+        const deltaDir = delta.dir;
+
+        if (!(entity instanceof Flail)) this.applyAcceleration(deltaDir, entity.knockback * this.resistance);
+        entity.applyAcceleration(deltaDir + Math.PI, this.knockback * entity.resistance);
     }
 }
