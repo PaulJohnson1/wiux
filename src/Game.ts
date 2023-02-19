@@ -6,6 +6,7 @@ import GameSpatialHashing from "./SpatialHashing";
 import Vector from "./Vector";
 import Leaderboard from "./Leaderboard";
 import Minimap from "./Minimap";
+import Wall from "./Entity/Wall";
 
 export default class Game 
 {
@@ -28,14 +29,56 @@ export default class Game
         this.spatialHashing = new GameSpatialHashing();
         this.leaderboard = new Leaderboard(this);
         this.minimap = new Minimap(this);
-        this.size = 15000;
+        this.size = 7500;
 
-        const distance = 5500;
+        const distance = 3500;
         new Generator(this).position = new Vector(-distance, -distance);
         new Generator(this).position = new Vector(-distance, distance);
         new Generator(this).position = new Vector(distance, -distance);
         new Generator(this).position = new Vector(distance, distance);
         new Generator(this, true).position = new Vector(0, 0);
+
+        // left plus
+        {
+            const wall = new Wall(this);
+            wall.position = new Vector(5000, 0);
+            wall.width = 100;
+            wall.height = 2000;
+        }
+        {
+            const wall = new Wall(this);
+            wall.position = new Vector(5000, 0);
+            wall.width = 2000;
+            wall.height = 100;
+        }
+
+        // right plus
+        {
+            const wall = new Wall(this);
+            wall.position = new Vector(-5000, 0);
+            wall.width = 100;
+            wall.height = 2000;
+        }
+        {
+            const wall = new Wall(this);
+            wall.position = new Vector(-5000, 0);
+            wall.width = 2000;
+            wall.height = 100;
+        }
+
+        // walls pointing to the middle
+        {
+            const wall = new Wall(this);
+            wall.position = new Vector(0, 4000);
+            wall.width = 100;
+            wall.height= 1000;
+        }
+        {
+            const wall = new Wall(this);
+            wall.position = new Vector(0, -4000);
+            wall.width = 100;
+            wall.height= 1000;
+        }
     }
 
     public randomPointInMap()
@@ -50,7 +93,7 @@ export default class Game
         for (let i = 0; i < 200; i++)
         {
             const attemptedPosition = this.randomPointInMap();
-            const entitiesNear = this.spatialHashing.queryRaw(attemptedPosition.x, attemptedPosition.y, 2000).filter(e => e.distanceToPoint(attemptedPosition) < 2000);
+            const entitiesNear = this.spatialHashing.queryRaw(attemptedPosition.x, attemptedPosition.y, 2000, 2000).filter(e => e.distanceToPoint(attemptedPosition) < 2000);
             if (entitiesNear.length === 0)
                 return attemptedPosition;
             let closestEntity = entitiesNear[0];

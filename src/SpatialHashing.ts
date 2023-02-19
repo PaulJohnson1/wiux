@@ -1,12 +1,5 @@
 import BaseEntity from "./Entity/BaseEntity";
-
-export interface QueryBounds {
-    position: {
-        x: number;
-        y: number;
-    }
-    size: number;
-}
+import Wall from "./Entity/Wall";
 
 export default class SpatialHashing 
 {
@@ -22,11 +15,12 @@ export default class SpatialHashing
     {
         const x = entity.position.x;
         const y = entity.position.y;
-        const s = entity.size;
-        const startX = (x - s) >> 6;
-        const startY = (y - s) >> 6;
-        const endX = (x + s) >> 6;
-        const endY = (y + s) >> 6;
+        const w = entity instanceof Wall ? entity.width : entity.size;
+        const h = entity instanceof Wall ? entity.height : entity.size;
+        const startX = (x - w) >> 6;
+        const startY = (y - h) >> 6;
+        const endX = (x + w) >> 6;
+        const endY = (y + h) >> 6;
 
         for (let x = startX; x <= endX; x++)
             for (let y = startY; y <= endY; y++)
@@ -40,14 +34,14 @@ export default class SpatialHashing
             }
     }
 
-    queryRaw(x: number, y: number, s: number)
+    queryRaw(x: number, y: number, w: number, h: number)
     {
         const result: BaseEntity[] = [];
 
-        const startX = (x - s) >> 6;
-        const startY = (y - s) >> 6;
-        const endX = (x + s) >> 6;
-        const endY = (y + s) >> 6;
+        const startX = (x - w) >> 6;
+        const startY = (y - h) >> 6;
+        const endX = (x + w) >> 6;
+        const endY = (y + h) >> 6;
 
         for (let x = startX; x <= endX; x++)
             for (let y = startY; y <= endY; y++)
@@ -71,8 +65,9 @@ export default class SpatialHashing
         return result;
     }
 
-    query(entity: QueryBounds): BaseEntity[] 
+    query(entity: BaseEntity): BaseEntity[] 
     {
-        return this.queryRaw(entity.position.x, entity.position.y, entity.size);
+        if (entity instanceof Wall) return this.queryRaw(entity.position.x, entity.position.y, entity.width, entity.height)
+        return this.queryRaw(entity.position.x, entity.position.y, entity.size, entity.size);
     }
 }

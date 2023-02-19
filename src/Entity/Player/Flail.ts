@@ -25,7 +25,7 @@ export default class Flail extends BaseEntity
         this.rope = null;
 
         this.size = 50;
-        this.score = 50;
+        this.score = 185;
         this.style = 1;
         this.resistance = 4
 
@@ -74,7 +74,7 @@ export default class Flail extends BaseEntity
 
     tick() 
     {
-        this.size = 100 * getBaseLog(this.score / 1000 + 1, 1.11);
+        this.size = 100 * getBaseLog(this.score / 1000 + 1, 1.4);
         this.restLength = this.size;
 
         super.tick();

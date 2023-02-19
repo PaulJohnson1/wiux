@@ -96,13 +96,5 @@ export default class Upgrade {
       this.game.ctx.closePath();
       this.game.ctx.restore();
     }
-
-    // this.game.drawText({
-    //   x: (this.maxWidth - 10) / devicePixelRatio,
-    //   y: (this.y + this.height / 2 + 5) / devicePixelRatio,
-    //   text: this.value,
-    //   font: `${20 / devicePixelRatio}px Ubuntu`,
-    //   color: "#000"
-    // });
   }
 }

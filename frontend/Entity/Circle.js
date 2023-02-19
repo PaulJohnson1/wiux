@@ -36,14 +36,12 @@ export default class Circle {
     if (this.name)
     {
       this.game.ctx.save();
-      this.game.ctx.beginPath();
       this.game.ctx.fillStyle = "#fff";
       this.game.ctx.strokeStyle = "#000";
       this.game.ctx.font = `bold ${50 / this.game.fov / devicePixelRatio}px Ubuntu`;
       const xOffset = this.game.ctx.measureText(this.name).width / 2;
       this.game.ctx.fillText(this.name, this.game.getSSX(this.x) - xOffset, this.game.getSSY(this.y) + this.size + 20 / this.game.fov / devicePixelRatio);
       this.game.ctx.strokeText(this.name, this.game.getSSX(this.x) - xOffset, this.game.getSSY(this.y) + this.size + 20 / this.game.fov / devicePixelRatio);
-      this.game.ctx.closePath();
       this.game.ctx.restore();
     }
 
@@ -90,10 +88,10 @@ export default class Circle {
     this.game.ctx.lineWidth = 5 / this.game.fov / devicePixelRatio;
     this.game.ctx.beginPath();
     this.game.ctx.arc(this.game.getSSX(this.x), this.game.getSSY(this.y), this.size / this.game.fov / devicePixelRatio, 0, Math.PI * 2);
+    this.game.ctx.closePath();
     this.game.ctx.fill();
     if (this.style !== 1)
       this.game.ctx.stroke();
-    this.game.ctx.closePath();
     this.game.ctx.restore();
   }
 }

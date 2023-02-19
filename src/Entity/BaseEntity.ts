@@ -3,9 +3,6 @@ import Vector from "../Vector";
 import Entity from "./Entity";
 import { Writer } from "../Coder";
 
-/**
- * An entity that is visible and has physics
- */
 export default class BaseEntity extends Entity 
 {
     public position: Vector;
@@ -28,6 +25,7 @@ export default class BaseEntity extends Entity
     public isAffectedByRope: boolean;
     public isAffectedByWind: boolean;
     public onMinimap: boolean;
+    public isWall: boolean;
 
     protected constructor(game: Game) 
     {
@@ -52,6 +50,7 @@ export default class BaseEntity extends Entity
         this.isAffectedByRope = false;
         this.isAffectedByWind = false;
         this.onMinimap = false;
+        this.isWall = false;
     }
 
     get area() 
@@ -97,8 +96,9 @@ export default class BaseEntity extends Entity
     collideWith(entity: BaseEntity) 
     {
         if (entity.detectsCollision) this.onCollisionCallback(entity);
-
         if (!entity.collides || !this.collides) return;
+        if (entity.isWall) return;
+        
         const delta = this.position.subtract(entity.position);
         const deltaDir = delta.dir;
 
@@ -106,19 +106,23 @@ export default class BaseEntity extends Entity
         entity.applyAcceleration(deltaDir + Math.PI, this.knockback * entity.resistance);
     }
 
-    private findCollisions() 
+    protected findCollisions() 
     {
         const possibleCollisions = this.findCollisionCandidates();
         const found: BaseEntity[] = [];
 
-        possibleCollisions.forEach(entity => 
+        for (const entity of possibleCollisions)
         {
-            const collisionRadius = this.size + entity.size;
+            if (entity === this) continue;
+            if (entity.isWall) continue;
+
             const delta = entity.position.subtract(this.position);
+            
+            const collisionRadius = this.size + entity.size;
 
             if (delta.x ** 2 + delta.y ** 2 < collisionRadius ** 2)
                 found.push(entity); 
-        })
+        }
 
         return found;
     }
@@ -166,8 +170,8 @@ export default class BaseEntity extends Entity
 
         if (this.isAffectedByWind) 
         {
-            this.windDirection += Math.random() * 0.05 - 0.048;
-            this.velocity = this.velocity.add(Vector.fromPolar(this.windDirection, 0.01));
+            this.windDirection += Math.random() * 0.05 - 0.0495;
+            this.velocity = this.velocity.add(Vector.fromPolar(this.windDirection, 1));
         }
     }
 }

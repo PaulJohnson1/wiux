@@ -4,6 +4,7 @@ import Flail from "./Flail";
 import Client from "../../Client";
 import BasicFlail from "./FlailDefinitions/Basic";
 import FlailDefinition from "./FlailDefinitions/BaseDefinition";
+import DeathScreenStats from "../../Client/DeathScreenStats";
 
 export default class Player extends BaseEntity 
 {
@@ -39,7 +40,13 @@ export default class Player extends BaseEntity
         super.terminate(killedBy);
         this.weapon.terminate(killedBy);
 
-        if (this.client != null) this.client.player = null;
+        if (this.client != null)
+        {
+            this.client.player = null;
+            if (killedBy)
+                this.client.killedBy = killedBy;
+            this.client.deathScreen = new DeathScreenStats(this.weapon.flails[0].score, this.weapon.flails[0].size, killedBy instanceof Flail ? killedBy.owner.name : undefined);
+        }
     }
 
     onCollisionCallback(entity: BaseEntity) 

@@ -10,6 +10,8 @@ import { getBaseLog } from "../util";
 import Stats from "./Stats";
 import Stat from "./Stat";
 import { ClientboundPacketId } from "../Constants";
+import Flail from "../Entity/Player/Flail";
+import DeathScreenStats from "./DeathScreenStats";
 
 const hash = (str: string) => crypto.createHash("sha256").update(str).digest("hex");
 
@@ -23,6 +25,10 @@ export default class Client
     public stats: Stats;
     public playerSpeed: number;
     public authenticated: boolean;
+    public cameraPosition: Vector = new Vector(0, 0);
+    public killedBy?: BaseEntity;
+    public deathScreen?: DeathScreenStats;
+    public killCount: number = 0;
     private authKey: string;
     private wantedAuth: string;
     private sentAuth: boolean;
@@ -68,9 +74,11 @@ export default class Client
         
                 const name = reader.string().substring(0, 50);
                 this.player = new Player(this.game, name, this);
+                this.killedBy = undefined;
                 this.stats.reset();
                 this.playerSpeed = 5;
                 this.fov = 1;
+                this.deathScreen = undefined;
                 this.updateStats();
                 this.sendPlayerId();
             }
@@ -160,10 +168,15 @@ export default class Client
 
         writer.vu(ClientboundPacketId.Update);
 
-        const entitiesInView = this.game.spatialHashing.query({
-            position: this.player != null ? this.player.position : new Vector(0, 0),
-            size: 1900 * this.fov,
-        });
+        writer.float(this.fov)
+        writer.vu(this.cameraPosition.x);
+        writer.vu(this.cameraPosition.y);
+
+        writer.vu(+!!this.deathScreen);
+        if (this.deathScreen)
+            this.deathScreen.writeBinary(writer);
+
+        const entitiesInView = this.game.spatialHashing.queryRaw(this.cameraPosition.x, this.cameraPosition.y, 1900 * this.fov, 1900 * this.fov);
 
         if (this.player != null)
             if (entitiesInView.indexOf(this.player as Player) === -1)
@@ -218,7 +231,17 @@ export default class Client
     tick() 
     {
         this.sendUpdate();
+        if (this.killedBy)
+        {
+            if (this.killedBy instanceof Flail)
+                this.cameraPosition = this.killedBy.owner.position;
+            else
+                this.cameraPosition = this.killedBy.position;
+            this.fov = 2;
+        }
+
         if (this.player == null) return;
+        this.cameraPosition = this.player.position;
         if (this.inputs.distance > 80) this.player.applyAcceleration(this.inputs.angle + Math.PI, this.playerSpeed);
         this.player.tick();
     }

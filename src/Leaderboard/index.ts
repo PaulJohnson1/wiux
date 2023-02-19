@@ -32,8 +32,7 @@ export default class Leaderboard {
             packet.string(entry.name);
         }
 
-        const clientsWithPlayer = this.game.server.clients.filter(client => client.player != null);
-        for (const client of clientsWithPlayer)
+        for (const client of this.game.server.clients)
             client.sendPacket(packet.write());
     }
 

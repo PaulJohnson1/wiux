@@ -3,7 +3,7 @@ import Server from "./Server";
 import { RivetClient } from "@rivet-gg/api";
 require("dotenv").config();
 
-const USING_RIVET = true; // for development
+const USING_RIVET = true;
 
 const wss = new WebSocket.Server({ port: 1234 });
 const server = new Server()
@@ -16,7 +16,6 @@ if (USING_RIVET)
     {
         if (!request.url) return ws.close();
         const token = request.url.slice(1, request.url.length);
-        console.log(token);
 
         rivet.matchmaker.players.connected({ playerToken: token }).then(() => {
             server.handleConnection(ws);
@@ -28,11 +27,13 @@ if (USING_RIVET)
     })
 
     rivet.matchmaker.lobbies.ready();
+    console.log("running production mode")
 }
 else
 {
     wss.on("connection", ws => {
         server.handleConnection(ws);
     })
+
+    console.log("running dev mode")
 }
-console.log("running");

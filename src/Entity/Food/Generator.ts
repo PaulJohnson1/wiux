@@ -22,7 +22,7 @@ export default class Generator extends BaseEntity
         this.canShootFood = true;
         this.lastHitTick = 0;
         this.hitCooldown = 5;
-        this.knockback = 4;
+        this.knockback = 8;
         this.resistance = 0;
         this.style = 0;
         this.color = red ? 0 : 100;
