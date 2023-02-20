@@ -24,7 +24,7 @@ export default class Generator extends BaseEntity
         this.hitCooldown = 5;
         this.knockback = 8;
         this.resistance = 0;
-        this.style = 0;
+        this.style = 5;
         this.color = red ? 0 : 100;
         this.collides = true;
         this.detectsCollision = true;
@@ -59,7 +59,7 @@ export default class Generator extends BaseEntity
         {
             writer.vu(1)
             writer.string(this.name);
-            writer.vu(0);
+            writer.vu(this.style);
             writer.vu(this.color);
         }
 

@@ -37,13 +37,6 @@ export default class Flail extends BaseEntity
         this.color = this.owner.color;
     }
 
-    applyAcceleration(theta: number, distance: number, polar = true) 
-    {
-        const addedVel = polar ? Vector.fromPolar(theta, distance) : new Vector(theta, distance);
-
-        this.velocity = this.velocity.add(addedVel);
-    }
-
     collideWith(entity: BaseEntity) 
     {
         if (entity.detectsCollision) this.onCollisionCallback(entity);
