@@ -44,7 +44,7 @@ export default class Wall extends BaseEntity
         const a = Math.cos(angle) / this.width;
         const b = Math.sin(angle) / this.height;
 
-        const kb = (x: number) => entity.applyAcceleration(x, this.knockback / entity.resistance);
+        const kb = (x: number) => entity.applyAcceleration(x, this.knockback * entity.resistance);
 
         if (Math.abs(a) <= Math.abs(b))
         {

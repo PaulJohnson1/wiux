@@ -176,7 +176,7 @@ export default class Client
         if (this.deathScreen)
             this.deathScreen.writeBinary(writer);
 
-        const entitiesInView = this.game.spatialHashing.queryRaw(this.cameraPosition.x, this.cameraPosition.y, 1900 * this.fov, 1900 * this.fov);
+        const entitiesInView = this.game.spatialHashing.queryRaw(this.cameraPosition.x, this.cameraPosition.y, 1000 * this.fov, 1000 * this.fov);
 
         if (this.player != null)
             if (entitiesInView.indexOf(this.player as Player) === -1)
@@ -204,7 +204,7 @@ export default class Client
             if (isCreation) this.view.push(entity);
 
             writer.vu(entity.id);
-            writer.vu(isCreation ? 1 : 0);
+            writer.vu(+isCreation);
             entity.writeBinary(writer, isCreation);
         });
 

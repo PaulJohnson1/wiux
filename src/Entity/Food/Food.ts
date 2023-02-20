@@ -14,7 +14,8 @@ export default class Food extends BaseEntity
         this.score = score;
 
         this.knockback = 1;
-        this.resistance = 5
+        this.resistance = 5;
+        this.style = 4;
 
         this.collides = true;
         this.detectsCollision = true;

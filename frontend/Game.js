@@ -226,7 +226,7 @@ export default class Game {
         this.leaderboard.entries[i] = entry;
       }
     } else if (type === 0) {
-      this.fovDestination = reader.float();
+      this.fovDestination = reader.float() * devicePixelRatio;
       this.cameraDestination.x = reader.vu();
       this.cameraDestination.y = reader.vu();
 
@@ -278,16 +278,12 @@ export default class Game {
     this.socket.send(writer.write());
   }
 
-  getSSX(worldX, scale = true) {
-    return !scale ?
-      (this.camera.x - worldX) / this.fov + innerWidth / 2 :
-      (this.camera.x - worldX) / this.fov / devicePixelRatio + innerWidth / 2;
+  getSSX(worldX) {
+    return (this.camera.x - worldX) / this.fov + innerWidth / 2;
   }
 
-  getSSY(worldY, scale = true) {
-    return !scale ?
-      (this.camera.y - worldY) / this.fov + innerHeight / 2 :
-      (this.camera.y - worldY) / this.fov / devicePixelRatio + innerHeight / 2;
+  getSSY(worldY) {
+    return (this.camera.y - worldY) / this.fov + innerHeight / 2;
   }
 
   render(deltaTick) {
@@ -299,23 +295,18 @@ export default class Game {
     // clear the canvas
     this.ctx.save();
     this.ctx.fillStyle = "#333"
-    this.ctx.beginPath();
-    this.ctx.rect(0, 0, innerWidth, innerHeight)
-    this.ctx.closePath();
-    this.ctx.fill()
+    this.ctx.fillRect(0, 0, innerWidth, innerHeight)
     this.ctx.restore();
 
     // draw the map
     this.ctx.save();
     this.ctx.fillStyle = this.deathStats ? "#5350ff20" : "#5350ff0f";
-    this.ctx.beginPath();
-    this.ctx.arc(this.getSSX(0), this.getSSY(0), this.world.size / this.fov / devicePixelRatio, 0, Math.PI * 2)
-    this.ctx.closePath();
+    this.ctx.arc(this.getSSX(0), this.getSSY(0), this.world.size / this.fov, 0, Math.PI * 2)
     this.ctx.fill();
     this.ctx.restore();
 
     // draw the grid
-    const increment = gridImage.width / devicePixelRatio;
+    const increment = gridImage.width;
     const xOffset = this.getSSX(0) % increment;
     const yOffset = this.getSSY(0) % increment;
 
@@ -336,11 +327,10 @@ export default class Game {
 
     this.ctx.save();
     this.ctx.fillStyle = "#3337";
-    this.ctx.beginPath();
-    this.ctx.arc(125 / devicePixelRatio, innerHeight - 125 / devicePixelRatio, 100 / devicePixelRatio, 0, Math.PI * 2)
-    this.ctx.closePath();
+    this.ctx.arc(125, innerHeight - 125, 100, 0, Math.PI * 2)
     this.ctx.fill();
     this.ctx.restore();
+
     this.world.map.forEach(entity => entity.render());
     this.leaderboard.render();
 

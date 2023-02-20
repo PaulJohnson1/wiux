@@ -53,7 +53,7 @@ export default class Flail extends BaseEntity
         const deltaDir = delta.dir;
 
         this.applyAcceleration(deltaDir, entity.knockback * this.resistance);
-        if (!(entity instanceof Player)) entity.applyAcceleration(deltaDir + Math.PI, this.knockback * entity.resistance);
+        if (!(entity instanceof Player) && !(entity instanceof Food)) entity.applyAcceleration(deltaDir + Math.PI, this.knockback * entity.resistance);
     }
 
     terminate(killedBy?: BaseEntity) 
@@ -61,7 +61,7 @@ export default class Flail extends BaseEntity
         super.terminate(killedBy);
 
         const foodCount = this.size / 10 + 1;
-        const foodScore = Math.sqrt(this.score) / foodCount;
+        const foodScore = Math.min(this.score, Math.sqrt(this.score / 1000) * 1000) / foodCount;
 
         for (let i = 0; i < foodCount; i++) 
         {

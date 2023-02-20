@@ -101,7 +101,7 @@ export default class BaseEntity extends Entity
         
         const delta = this.position.subtract(entity.position);
         const deltaDir = delta.dir;
-
+        
         this.applyAcceleration(deltaDir, entity.knockback * this.resistance);
         entity.applyAcceleration(deltaDir + Math.PI, this.knockback * entity.resistance);
     }
@@ -171,7 +171,7 @@ export default class BaseEntity extends Entity
         if (this.isAffectedByWind) 
         {
             this.windDirection += Math.random() * 0.05 - 0.0495;
-            this.velocity = this.velocity.add(Vector.fromPolar(this.windDirection, 1));
+            this.velocity = this.velocity.add(Vector.fromPolar(this.windDirection, 0.5));
         }
     }
 }
