@@ -34,8 +34,7 @@ export default class Minimap {
             packet.vu(object.size);
         }
 
-        const clientsWithPlayer = this.game.server.clients.filter(client => client.player != null);
-        for (const client of clientsWithPlayer)
+        for (const client of this.game.server.clients)
             client.sendPacket(packet.write());
     }
 

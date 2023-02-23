@@ -6,16 +6,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="wiux_favicon.png"/>
     <meta charset="UTF-8">
-    <meta name="google-site-verification" content="Kx5-yVnOQwXnvLYVi4VAaJ4TxbBFmm0sS1MKg7-9daQ" />
     <meta content="wiux.io" property="og:title" />
-    <meta content="open source io game" property="og:description" />
-    <meta content="https://wiux-frontend.pauljohnson11.repl.co" property="og:url" />
+    <meta content="Attack and dodge other players while not getting hit!" property="og:description" />
+    <meta content="https://wiux.rivet.game" property="og:url" />
     <meta content="wiux_favicon.png" property="og:image" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Paul Johnson">
     <meta name="keywords" content="game, io game, wiux">
     <meta name="description" content="Attack and dodge other players while not getting hit!">
-
     <title>wiux.io</title>
 
     <style>
@@ -52,6 +50,7 @@
         vertical-align: middle;
         width: 180px;
         cursor: pointer;
+        border: 5px solid rgb(107, 107, 107);
       }
 
       #background {
@@ -62,8 +61,15 @@
         width: 100%;
       }
 
+      #discord {
+        left: 20px;
+        top: 50px;
+        position:absolute;
+        height: 300px;
+      }
+
       .boring {
-        font: 20px Arial;
+        font: 20px Ubuntu;
         left: 20px;
         position: fixed;
         top: 10px;
@@ -72,13 +78,15 @@
   </head>
   <body>
     <img id="background" src="wiux_background.png"/>
+    <iframe id="discord" src="https://discord.com/widget?id=1078128818646167713&theme=dark" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
     <input id="input" placeholder="Name" maxlength=50></input>
     <div id="spawn">Connecting...</div>
     <div class="boring" id="legal">
+      <a style="color: #fff;" href="https://github.com/PaulJohnson1/wiux">Github</a>
       <a style="color: #fff;" href="/boring/pp.html">Privacy Policy</a>
       <a style="color: #fff;" href="/boring/tos.html">Terms of use</a>
     </div>
     <canvas id="canvas"></canvas>
-    <script type="module" src="index.min.js?cache=gone-lmfao5"></script>
+    <script type="module" src="index.min.js?cache=gone-lmfao6"></script>
   </body>
 </html>

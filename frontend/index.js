@@ -3,7 +3,7 @@
 import Game from "./Game.js";
 import { RivetClient } from "./rivet-api.js";
 
-const DEVELOPER_MODE = true;
+const DEVELOPER_MODE = false;
 
 if (DEVELOPER_MODE)
 {
@@ -14,6 +14,7 @@ if (DEVELOPER_MODE)
       document.getElementById("spawn"),
       document.getElementById("background"),
       document.getElementById("legal"),
+      document.getElementById("discord"),
     ],
     new WebSocket("ws://localhost:1234")
   );
@@ -32,6 +33,7 @@ else {
         document.getElementById("spawn"),
         document.getElementById("background"),
         document.getElementById("legal"),
+        document.getElementById("discord"),
       ],
       socket
     );

@@ -3,7 +3,7 @@ import Server from "./Server";
 import { RivetClient } from "@rivet-gg/api";
 require("dotenv").config();
 
-const USING_RIVET = false;
+const USING_RIVET = true;
 
 const wss = new WebSocket.Server({ port: 1234 });
 const server = new Server()
