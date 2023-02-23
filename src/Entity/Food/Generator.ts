@@ -4,6 +4,7 @@ import Flail from "../Player/Flail";
 import Player from "../Player/Player"
 import Game from "../../Game";
 import { Writer } from "../../Coder";
+import Sentinel from "./Sentinel";
 
 export default class Generator extends BaseEntity 
 {
@@ -45,6 +46,12 @@ export default class Generator extends BaseEntity
 
         this.animationSizeAddon = this.red ? 50 : 20;
         this.lastHitTick = this.game.tickCount;
+
+        if (Math.random() < 0.1)
+        {
+            const sentinel = new Sentinel(this.game);
+            sentinel.position = this.position.movePointByAngle(1, Math.random() * Math.PI * 2)
+        }
 
         for (let i = 0; i < 3; i++) 
         {

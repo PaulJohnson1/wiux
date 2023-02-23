@@ -1,12 +1,13 @@
 import { Reader, Writer } from "./Coder.js";
 import Circle from "./Entity/Circle.js";
 import Wall from "./Entity/Wall.js";
-import MinimapEntity from "./Entity/MinimapEntity.js";
 import Rope from "./Entity/Rope.js";
+import Sentinel from "./Entity/Sentinel.js";
+import MinimapEntity from "./Entity/MinimapEntity.js";
 import Upgrade from "./Gui/Upgrade.js";
 import Leaderboard, { LeaderboardEntry } from "./Gui/Leaderboard.js";
-import literally_nothing from "./sha256.js";
 import { lerp } from "./util.js";
+import literally_nothing from "./sha256.js";
 
 const gridImage = new Image();
 gridImage.src = "/Sprites/grid.png";
@@ -252,6 +253,7 @@ export default class Game {
           if (type === 1) entity = new Circle(this);
           else if (type === 2) entity = new Rope(this);
           else if (type === 3) entity = new Wall(this);
+          else if (type === 4) entity = new Sentinel(this);
 
           entity.id = id;
           this.world._entities[entity.id] = entity;

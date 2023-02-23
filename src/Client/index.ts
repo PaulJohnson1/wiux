@@ -47,7 +47,7 @@ export default class Client
         this.stats = new Stats([
             new Stat(stat => this.player?.weapon.flails.forEach(flail => flail.knockback /= 0.9)),
             new Stat(stat => this.playerSpeed += 0.15),
-            new Stat(stat => this.fov += 0.05)
+            new Stat(stat => this.fov += 0.1)
         ]);
         this.playerSpeed = 0;
         this.inputs = { angle: 0, distance: 0, mousePressed: false };

@@ -4,7 +4,7 @@ export default class Circle {
   constructor(game) {
     this.game = game;
     this.x = 0;
-    this.x = 0;
+    this.y = 0;
     this.destinationX = 0;
     this.destinationY = 0;
     this.skewingIncrement = 0;

@@ -123,9 +123,9 @@ export default class Game
 
         this.entities.forEach(entity => entity.tick());
 
-        if ((this.tickCount & 4) === 4)
+        if ((this.tickCount & 3) === 3)
             this.leaderboard.tick();
-        if ((this.tickCount & 8) === 8)
+        if ((this.tickCount & 7) === 7)
             this.minimap.tick();
     }
 }

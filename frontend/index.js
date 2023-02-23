@@ -3,7 +3,7 @@
 import Game from "./Game.js";
 import { RivetClient } from "./rivet-api.js";
 
-const DEVELOPER_MODE = false;
+const DEVELOPER_MODE = true;
 
 if (DEVELOPER_MODE)
 {
