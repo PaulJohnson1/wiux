@@ -36,7 +36,13 @@ export default class Vector
     {
         const subtracted = this.subtract(vector);
         return Math.sqrt(Math.pow(subtracted.x, 2) + Math.pow(subtracted.y, 2)); // math.pow(a, b) is faster than a ** b but makes the code less readable
-    } 
+    }
+
+    distanceSquared(vector: Vector)
+    {
+        const delta = this.subtract(vector);
+        return delta.x * delta.x + delta.y * delta.y;
+    }
 
     dot(vector: Vector) 
     {
@@ -55,7 +61,12 @@ export default class Vector
 
     get mag() 
     {
-        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    get magSquared() 
+    {
+        return this.x * this.x + this.y * this.y;
     }
 
     get dir() 

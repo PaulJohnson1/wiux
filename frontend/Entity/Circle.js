@@ -32,7 +32,7 @@ export default class Circle {
 
     this.x = lerp(this.x, this.destinationX, deltaTick)
     this.y = lerp(this.y, this.destinationY, deltaTick)
-    this.size += (this.destinationSize - this.size) / 20;
+    this.size = lerp(this.size, this.destinationSize, deltaTick);
 
     if (this.name)
     {

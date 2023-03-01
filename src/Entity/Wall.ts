@@ -16,7 +16,7 @@ export default class Wall extends BaseEntity
         this.height = 100;
         this.size = 100; // test
         this.resistance = 0;
-        this.knockback = 8;
+        this.knockback = 16;
         this.onMinimap = true;
         this.collides = true;
         this.detectsCollision = true;
@@ -37,40 +37,75 @@ export default class Wall extends BaseEntity
 
     collideWith(entity: BaseEntity)
     {
-        // delta to the closest pixel of the rectangle to the circle
-        const delta = entity.position.subtract(this.position);
-        const angle = delta.dir;
-
-        const a = Math.cos(angle) / this.width;
-        const b = Math.sin(angle) / this.height;
-
-        const kb = (x: number) => entity.applyAcceleration(x, this.knockback * entity.resistance);
-
-        if (Math.abs(a) <= Math.abs(b))
+        const closestPointOnLine = (point: Vector, start: Vector, end: Vector) =>
         {
-            if (b < 0)
+            const atob = end.subtract(start);
+            const atop = point.subtract(start);
+            const len = atob.magSquared;
+            let dot = atop.dot(atob)
+            const t = Math.min(1, Math.max(0, dot / len));
+        
+            dot = ((end.x - start.x) * (point.y - start.y)) - ((end.y - start.y) * (point.x - start.x));
+        
+            return new Vector(start.x + (atob.x * t), start.y + (atob.y * t));
+        }
+
+        // lines that make up the rectangle
+        const lines = [
+            [
+                new Vector(this.position.x - this.width / 2, this.position.y - this.height / 2),
+                new Vector(this.position.x + this.width / 2, this.position.y - this.height / 2)
+            ],
+            [
+                new Vector(this.position.x + this.width / 2, this.position.y - this.height / 2),
+                new Vector(this.position.x + this.width / 2, this.position.y + this.height / 2)
+            ],
+            [
+                new Vector(this.position.x + this.width / 2, this.position.y + this.height / 2),
+                new Vector(this.position.x - this.width / 2, this.position.y + this.height / 2)
+            ],
+            [
+                new Vector(this.position.x - this.width / 2, this.position.y + this.height / 2),
+                new Vector(this.position.x - this.width / 2, this.position.y - this.height / 2)
+            ],
+        ];
+        let closestLine = lines[0];
+        let closestLineDistance = Infinity;
+        for (const line of lines)
+        {
+            const closestPointToLine = closestPointOnLine(entity.position, line[0], line[1]);
+            const delta = closestPointToLine.subtract(entity.position)
+            if (delta.magSquared < closestLineDistance)
             {
-                entity.position.y = this.position.y - this.height / 2 - entity.size - 1;
-                kb(Math.PI * 3 / 2);
-            }
-            else
-            {
-                entity.position.y = this.position.y + this.height / 2 + entity.size + 1;
-                kb(Math.PI / 2);
+                closestLine = line;
+                closestLineDistance = delta.magSquared;
             }
         }
-        else
+
+        const line = lines.indexOf(closestLine);
+        const kb = (x: number) => entity.applyAcceleration(x, this.knockback * entity.resistance);
+
+        switch (line)
         {
-            if (a < 0)
-            {
-                entity.position.x = this.position.x - this.width / 2 - entity.size - 1;
-                kb(Math.PI);
-            }
-            else
-            {
+            case 0:
+                entity.position.y = this.position.y - this.height / 2 - entity.size - 1;
+                kb(Math.PI * 3 / 2);
+            break;
+
+            case 1:
                 entity.position.x = this.position.x + this.width / 2 + entity.size + 1;
                 kb(0);
-            }
+            break;
+
+            case 2:
+                entity.position.y = this.position.y + this.height / 2 + entity.size + 1;
+                kb(Math.PI / 2);
+            break;
+
+            case 3:
+                entity.position.x = this.position.x - this.width / 2 - entity.size - 1;
+                kb(Math.PI);
+            break;
         }
     }
 

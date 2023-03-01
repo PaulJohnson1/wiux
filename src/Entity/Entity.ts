@@ -10,6 +10,7 @@ export default class Entity
     public game: Game;
     public id: number;
     public sentToClient: boolean;
+    public ticked: boolean = false;
 
     constructor(game: Game) 
     {

@@ -121,7 +121,9 @@ export default class Game
             this.spatialHashing.insert(entity);
         });
 
-        this.entities.forEach(entity => entity.tick());
+        this.entities.forEach(entity => entity.ticked = false);
+        this.entities.filter(e => !(e instanceof Wall)).forEach(e => { e.tick(); e.ticked = true });
+        this.entities.filter(e => !e.ticked).forEach(e => { e.tick(); e.ticked = true });
 
         if ((this.tickCount & 3) === 3)
             this.leaderboard.tick();

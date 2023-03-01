@@ -99,6 +99,7 @@ export default class Game {
       size: 0,
       _entities: {},
       entities: [],
+      deletingEntities: [],
       map: new Set(),
     };
 
